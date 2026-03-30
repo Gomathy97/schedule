@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Fitness Plan</title>
+  <style>
+    :root {
+      --orange: #d95f2b;
+      --orange-light: #fdf0ea;
+      --orange-mid: #f4a07a;
+      --green: #2e9e6b;
+      --green-light: #eaf7f1;
+      --blue: #2980b9;
+      --blue-light: #e8f4fc;
+      --purple: #7c4daa;
+      --purple-light: #f3ecfb;
+      --grey: #6b7280;
+      --grey-light: #f4f4f5;
+      --border: #e5e7eb;
+      --text: #111827;
+      --text-soft: #6b7280;
+      --bg: #f9fafb;
+      --white: #ffffff;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+
+    /* ── LAYOUT ── */
+    .app { display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 28px 0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+    }
+    .sidebar-logo {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .sidebar-logo h1 { font-size: 1rem; font-weight: 800; color: var(--orange); }
+    .sidebar-logo p { font-size: 0.72rem; color: var(--text-soft); margin-top: 3px; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-soft);
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: var(--grey-light); color: var(--text); }
+    .nav-item.active { color: var(--orange); border-left-color: var(--orange); background: var(--orange-light); font-weight: 600; }
+    .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    .nav-section-label {
+      padding: 16px 20px 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #9ca3af;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 16px 20px 0;
+      border-top: 1px solid var(--border);
+    }
+    .global-pct { font-size: 0.75rem; color: var(--text-soft); margin-bottom: 6px; }
+    .global-pct strong { color: var(--orange); font-size: 1rem; }
+    .bar-track { background: var(--grey-light); border-radius: 10px; height: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--orange-mid)); border-radius: 10px; transition: width 0.4s ease; }
+
+    /* ── MAIN ── */
+    .main { flex: 1; overflow-y: auto; }
+
+    .page { display: none; padding: 32px 36px; max-width: 820px; }
+    .page.active { display: block; }
+
+    .page-header { margin-bottom: 28px; }
+    .page-header h2 { font-size: 1.4rem; font-weight: 800; color: var(--text); }
+    .page-header p { font-size: 0.875rem; color: var(--text-soft); margin-top: 4px; }
+
+    /* ── TODAY BANNER ── */
+    .today-banner {
+      background: linear-gradient(135deg, var(--orange), #e8834f);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      color: white;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .today-banner .day-info h3 { font-size: 1.1rem; font-weight: 800; }
+    .today-banner .day-info p { font-size: 0.82rem; opacity: 0.85; margin-top: 3px; }
+    .today-badge {
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ── WEEK TABS ── */
+    .week-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .week-tab {
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .week-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .week-tab.active { background: var(--orange); color: white; border-color: var(--orange); }
+    .week-tab .wpct {
+      font-size: 0.7rem;
+      background: rgba(255,255,255,0.25);
+      padding: 1px 5px;
+      border-radius: 10px;
+    }
+    .week-tab:not(.active) .wpct { background: var(--grey-light); color: var(--grey); }
+
+    /* ── DAY ROWS ── */
+    .day-row {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .day-row.is-today { border-color: var(--orange); }
+    .day-row.is-done { border-color: #86efac; background: #f0fdf4; }
+
+    .day-row-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px;
+      cursor: pointer;
+      gap: 12px;
+      user-select: none;
+    }
+    .day-row-header:hover { background: var(--grey-light); }
+    .day-row.is-today .day-row-header:hover { background: var(--orange-light); }
+
+    .day-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .dot-strength { background: var(--orange-light); color: var(--orange); }
+    .dot-cardio { background: var(--blue-light); color: var(--blue); }
+    .dot-recovery { background: var(--green-light); color: var(--green); }
+    .dot-rest { background: var(--grey-light); color: var(--grey); }
+    .dot-endurance { background: var(--purple-light); color: var(--purple); }
+
+    .day-row-meta { flex: 1; }
+    .day-row-meta .dr-day { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-soft); }
+    .day-row-meta .dr-title { font-size: 0.92rem; font-weight: 700; color: var(--text); margin-top: 1px; }
+
+    .day-row-right { display: flex; align-items: center; gap: 10px; }
+    .done-count { font-size: 0.75rem; color: var(--text-soft); }
+    .chevron { font-size: 0.7rem; color: #9ca3af; transition: transform 0.2s; }
+    .day-row.expanded .chevron { transform: rotate(180deg); }
+
+    .today-pill {
+      background: var(--orange);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .done-pill {
+      background: #86efac;
+      color: #166534;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .day-row-body {
+      display: none;
+      padding: 0 18px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .day-row.expanded .day-row-body { display: block; }
+
+    .exercise-list { margin-top: 12px; }
+    .ex-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .ex-item:last-child { border-bottom: none; }
+    .ex-text { font-size: 0.84rem; color: #374151; line-height: 1.4; }
+    .ex-item.done .ex-text { text-decoration: line-through; color: #9ca3af; }
+
+    /* ── MEALS ── */
+    .meals-day-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .mday-tab {
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mday-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .mday-tab.active { background: var(--orange); color: white; border-color: var(--orange); }
+
+    .meal-detail { display: none; }
+    .meal-detail.active { display: block; }
+
+    .meal-slots {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .meal-slot-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .msc-emoji { font-size: 1.4rem; margin-bottom: 8px; }
+    .msc-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-soft); margin-bottom: 4px; }
+    .msc-value { font-size: 0.9rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+
+    /* ── INFO GRID ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .ig-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .ig-card h4 { font-size: 0.82rem; font-weight: 700; color: var(--orange); margin-bottom: 10px; }
+    .ig-card ul { padding-left: 14px; }
+    .ig-card li { font-size: 0.8rem; color: #374151; margin-bottom: 5px; line-height: 1.4; }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-soft);
+      margin: 24px 0 12px;
+    }
+
+    /* ── PROGRESS PAGE ── */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .stat-num { font-size: 2.2rem; font-weight: 900; color: var(--orange); line-height: 1; }
+    .stat-lbl { font-size: 0.75rem; color: var(--text-soft); margin-top: 5px; }
+
+    .wk-bars { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .wk-bar-row { display: flex; align-items: center; gap: 12px; }
+    .wk-bar-lbl { font-size: 0.82rem; font-weight: 600; width: 56px; color: var(--text); }
+    .wk-bar-track { flex: 1; height: 10px; background: var(--grey-light); border-radius: 20px; overflow: hidden; }
+    .wk-bar-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--orange-mid)); border-radius: 20px; transition: width 0.5s ease; }
+    .wk-bar-pct { font-size: 0.78rem; color: var(--text-soft); width: 34px; text-align: right; }
+
+    .streak-card {
+      background: linear-gradient(135deg, var(--orange), #e8834f);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      color: white;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .streak-num { font-size: 3rem; font-weight: 900; line-height: 1; }
+    .streak-text h3 { font-size: 1rem; font-weight: 700; }
+    .streak-text p { font-size: 0.8rem; opacity: 0.85; margin-top: 3px; }
+
+    .reset-btn {
+      background: #fff1f1;
+      border: 1.5px solid #fecaca;
+      color: #dc2626;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .reset-btn:hover { background: #fee2e2; }
+
+    /* ── IMAGES ── */
+    .day-row-img {
+      width: 56px; height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .badge-pill {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 700;
+      padding: 2px 7px; border-radius: 20px;
+      margin-top: 4px; text-transform: capitalize;
+    }
+    .badge-pill.badge-strength { background: var(--orange-light); color: var(--orange); }
+    .badge-pill.badge-cardio { background: var(--blue-light); color: var(--blue); }
+    .badge-pill.badge-recovery { background: var(--green-light); color: var(--green); }
+    .badge-pill.badge-rest { background: var(--grey-light); color: var(--grey); }
+    .badge-pill.badge-endurance { background: var(--purple-light); color: var(--purple); }
+
+    /* exercise reference images inside expanded card */
+    .ex-img-wrap { margin: 12px 0 4px; }
+    .ex-img-wrap img {
+      width: 100%; max-height: 180px;
+      object-fit: cover; border-radius: 10px;
+    }
+
+    .meal-hero-img-wrap { margin-bottom: 14px; }
+    .meal-hero-img {
+      width: 100%; height: 180px;
+      object-fit: cover; border-radius: var(--radius);
+    }
+
+    .rc-food-img {
+      width: 100%; height: 160px;
+      object-fit: cover; border-radius: 10px;
+      margin-bottom: 14px;
+    }
+
+    /* ── PUPPY SCHEDULE ── */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 10px; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -22px; top: 6px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px var(--orange);
+    }
+    .tl-item.puppy::before { background: #f59e0b; box-shadow: 0 0 0 2px #f59e0b; }
+    .tl-item.workout::before { background: var(--orange); box-shadow: 0 0 0 2px var(--orange); }
+    .tl-item.work::before { background: var(--blue); box-shadow: 0 0 0 2px var(--blue); }
+    .tl-item.meal::before { background: var(--green); box-shadow: 0 0 0 2px var(--green); }
+    .tl-item.rest::before { background: var(--grey); box-shadow: 0 0 0 2px var(--grey); }
+
+    .tl-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .tl-card.puppy { border-color: #fde68a; background: #fffbeb; }
+    .tl-card.workout { border-color: var(--orange-mid); background: var(--orange-light); }
+    .tl-card.work { border-color: #bfdbfe; background: #eff6ff; }
+    .tl-card.meal { border-color: #a7f3d0; background: var(--green-light); }
+
+    .tl-time { font-size: 0.7rem; font-weight: 700; color: var(--text-soft); letter-spacing: 0.3px; }
+    .tl-title { font-size: 0.9rem; font-weight: 700; color: var(--text); margin: 2px 0; }
+    .tl-note { font-size: 0.78rem; color: var(--text-soft); line-height: 1.4; }
+
+    .puppy-tip-box {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 20px;
+    }
+    .puppy-tip-box h4 { font-size: 0.85rem; font-weight: 700; color: #92400e; margin-bottom: 8px; }
+    .puppy-tip-box ul { padding-left: 16px; }
+    .puppy-tip-box li { font-size: 0.82rem; color: #78350f; margin-bottom: 5px; line-height: 1.4; }
+
+    /* ── RECIPES ── */
+    .recipe-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .recipe-tab {
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .recipe-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .recipe-tab.active { background: var(--orange); color: white; border-color: var(--orange); }
+
+    .recipe-page { display: none; }
+    .recipe-page.active { display: block; }
+
+    .recipe-cards { display: flex; flex-direction: column; gap: 14px; }
+    .recipe-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .rc-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .rc-header:hover { background: var(--grey-light); }
+    .rc-emoji { font-size: 2rem; flex-shrink: 0; }
+    .rc-meta { flex: 1; }
+    .rc-meta h3 { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .rc-meta p { font-size: 0.78rem; color: var(--text-soft); margin-top: 3px; }
+    .rc-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .rc-pill {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: var(--orange-light);
+      color: var(--orange);
+    }
+    .rc-pill.green { background: var(--green-light); color: var(--green); }
+    .rc-pill.blue { background: var(--blue-light); color: var(--blue); }
+    .rc-chevron { font-size: 0.7rem; color: #9ca3af; transition: transform 0.2s; }
+    .recipe-card.expanded .rc-chevron { transform: rotate(180deg); }
+
+    .rc-body {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 18px;
+    }
+    .recipe-card.expanded .rc-body { display: block; }
+
+    .rc-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+      margin-top: 14px;
+    }
+    .rc-section-title:first-child { margin-top: 0; }
+
+    .rc-ingredients { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+    .rc-ing {
+      background: var(--grey-light);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      color: var(--text);
+    }
+
+    .rc-steps { counter-reset: step; list-style: none; padding: 0; }
+    .rc-steps li {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 0.84rem;
+      color: #374151;
+      line-height: 1.5;
+    }
+    .rc-steps li::before {
+      counter-increment: step;
+      content: counter(step);
+      background: var(--orange);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 800;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .rc-tip {
+      background: var(--orange-light);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      color: #7c3010;
+      margin-top: 12px;
+    }
+
+    .prep-checklist { list-style: none; padding: 0; }
+    .prep-checklist li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.84rem;
+      color: #374151;
+    }
+    .prep-checklist li:last-child { border-bottom: none; }
+    .prep-checklist li::before {
+      content: '□';
+      font-size: 1rem;
+      color: var(--orange);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 640px) {
+      .sidebar { display: none; }
+      .page { padding: 20px 16px; }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        background: var(--white);
+        border-top: 1px solid var(--border);
+        z-index: 100;
+      }
+      .bn-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 4px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--text-soft);
+        cursor: pointer;
+        gap: 3px;
+      }
+      .bn-item .bn-icon { font-size: 1.2rem; }
+      .bn-item.active { color: var(--orange); }
+      .main { padding-bottom: 70px; }
+    }
+    @media (min-width: 641px) {
+      .bottom-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <h1>FitPlan</h1>
+      <p>Your monthly tracker</p>
+    </div>
+    <div class="nav-section-label">Plan</div>
+    <a class="nav-item active" onclick="showPage('today')" href="#">
+      <span class="nav-icon">🏠</span> Today
+    </a>
+    <a class="nav-item" onclick="showPage('workouts')" href="#">
+      <span class="nav-icon">💪</span> Workouts
+    </a>
+    <a class="nav-item" onclick="showPage('meals')" href="#">
+      <span class="nav-icon">🥗</span> Meals
+    </a>
+    <a class="nav-item" onclick="showPage('recipes')" href="#">
+      <span class="nav-icon">👩‍🍳</span> Recipes
+    </a>
+    <a class="nav-item" onclick="showPage('puppy')" href="#">
+      <span class="nav-icon">🐶</span> Puppy Schedule
+    </a>
+    <a class="nav-item" onclick="showPage('progress')" href="#">
+      <span class="nav-icon">📊</span> Progress
+    </a>
+    <div class="sidebar-bottom">
+      <div class="global-pct"><strong id="sb-pct">0%</strong> this month</div>
+      <div class="bar-track"><div class="bar-fill" id="sb-bar" style="width:0%"></div></div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TODAY PAGE -->
+    <div class="page active" id="page-today">
+      <div class="page-header">
+        <h2 id="today-heading">Today</h2>
+        <p id="today-date"></p>
+      </div>
+      <div id="today-banner-area"></div>
+      <div id="today-workout-area"></div>
+      <div id="today-meal-area"></div>
+    </div>
+
+    <!-- WORKOUTS PAGE -->
+    <div class="page" id="page-workouts">
+      <div class="page-header">
+        <h2>Workouts</h2>
+        <p>4-week progressive plan · Strength + Endurance · Dumbbells up to 10 kg</p>
+      </div>
+      <div class="week-tabs" id="weekTabs"></div>
+      <div id="weekContent"></div>
+    </div>
+
+    <!-- MEALS PAGE -->
+    <div class="page" id="page-meals">
+      <div class="page-header">
+        <h2>Meal Plan</h2>
+        <p>South Indian rotation · Simple · Batch-cook friendly</p>
+      </div>
+      <div class="meals-day-tabs" id="mealDayTabs"></div>
+      <div id="mealDayContent"></div>
+      <div class="section-label">Tips & Prep</div>
+      <div class="info-grid" id="mealInfoGrid"></div>
+    </div>
+
+    <!-- PUPPY PAGE -->
+    <div class="page" id="page-puppy">
+      <div class="page-header">
+        <h2>🐶 Puppy + Your Day</h2>
+        <p>How to fit workouts, work, and puppy duties into one day — 50-day-old puppy, indoors only</p>
+      </div>
+      <div id="puppyContent"></div>
+    </div>
+
+    <!-- RECIPES PAGE -->
+    <div class="page" id="page-recipes">
+      <div class="page-header">
+        <h2>Recipes & Meal Prep</h2>
+        <p>Simple step-by-step — no cooking experience needed</p>
+      </div>
+      <div class="recipe-tabs" id="recipeTabs"></div>
+      <div id="recipeContent"></div>
+    </div>
+
+    <!-- PROGRESS PAGE -->
+    <div class="page" id="page-progress">
+      <div class="page-header">
+        <h2>Progress</h2>
+        <p>Your monthly overview</p>
+      </div>
+      <div id="streakCard"></div>
+      <div class="stat-row" id="statRow"></div>
+      <div class="section-label">Weekly Breakdown</div>
+      <div class="wk-bars" id="wkBars"></div>
+      <button class="reset-btn" onclick="resetAll()">Reset Month</button>
+    </div>
+
+  </main>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="bn-item active" onclick="showPage('today',this)"><span class="bn-icon">🏠</span>Today</div>
+    <div class="bn-item" onclick="showPage('workouts',this)"><span class="bn-icon">💪</span>Workouts</div>
+    <div class="bn-item" onclick="showPage('meals',this)"><span class="bn-icon">🥗</span>Meals</div>
+    <div class="bn-item" onclick="showPage('recipes',this)"><span class="bn-icon">👩‍🍳</span>Recipes</div>
+    <div class="bn-item" onclick="showPage('puppy',this)"><span class="bn-icon">🐶</span>Puppy</div>
+    <div class="bn-item" onclick="showPage('progress',this)"><span class="bn-icon">📊</span>Progress</div>
+  </nav>
+
+</div>
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const WEEK_DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+const WORKOUT_IMAGES = {
+  Mon: 'images/workouts/upper-body.jpg',
+  Tue: 'images/workouts/cardio.jpg',
+  Wed: 'images/workouts/lower-body.jpg',
+  Thu: 'images/workouts/recovery.jpg',
+  Fri: 'images/workouts/full-body.jpg',
+  Sat: 'images/workouts/endurance.jpg',
+  Sun: 'images/workouts/rest.jpg',
+};
+
+const MEAL_IMAGES = {
+  Mon: 'images/meals/dosa.jpg',
+  Tue: 'images/meals/ragi.jpg',
+  Wed: 'images/meals/eggs.jpg',
+  Thu: 'images/meals/idli.jpg',
+  Fri: 'images/meals/rice-sambar.jpg',
+  Sat: 'images/meals/pongal.jpg',
+  Sun: 'images/meals/idli.jpg',
+};
+
+const SCHEDULE = [
+  {
+    day: 'Mon', badge: 'strength', title: 'Upper Body Strength',
+    icon: 'STR', dotClass: 'dot-strength',
+    exercises: [
+      { name: 'DB Shoulder Press', img:'images/exercises/shoulder-press.jpg', detail: '6–8 kg', sets: { 1:'4×6', 2:'4×7', 3:'4×8', 4:'4×8 @8kg' } },
+      { name: 'Bent-Over Row', img:'images/exercises/bent-over-row.jpg', detail: '8–10 kg', sets: { 1:'4×6 each', 2:'4×7', 3:'4×8', 4:'4×8 @10kg' } },
+      { name: 'Bicep Curl', img:'images/exercises/bicep-curl.jpg', detail: '6 kg — slow on the way down', sets: { 1:'3×12', 2:'3×12', 3:'3×14', 4:'3×15' } },
+      { name: 'Tricep Kickback', img:'images/exercises/tricep-kickback.jpg', detail: '5 kg each arm', sets: { 1:'3×12', 2:'3×12', 3:'3×14', 4:'3×15' } },
+      { name: 'Push-Ups to Failure', img:'images/exercises/push-up.jpg', detail: 'Track reps — aim to beat each week', sets: { 1:'3 sets', 2:'3 sets', 3:'3 sets', 4:'3 sets' } },
+    ]
+  },
+  {
+    day: 'Tue', badge: 'cardio', title: 'Cardio Endurance',
+    icon: 'CAR', dotClass: 'dot-cardio',
+    exercises: [
+      { name: 'Warm-up', img:'images/exercises/stretch.jpg', detail: 'March in place', sets: { 1:'2 min', 2:'2 min', 3:'2 min', 4:'2 min' } },
+      { name: 'Jumping Jacks', img:'images/exercises/jumping-jacks.jpg', detail: 'Work / Rest', sets: { 1:'40s on / 20s off × 4', 2:'40s on / 20s off × 4', 3:'45s on / 15s off × 5', 4:'45s on / 15s off × 5' } },
+      { name: 'Mountain Climbers', img:'images/exercises/mountain-climber.jpg', detail: 'Keep hips level', sets: { 1:'40s × 4', 2:'40s × 4', 3:'45s × 5', 4:'45s × 5' } },
+      { name: 'Squat Jumps', img:'images/exercises/squat.jpg', detail: 'Land soft', sets: { 1:'40s × 4', 2:'40s × 4', 3:'45s × 5', 4:'45s × 5' } },
+      { name: 'Burpees', img:'images/exercises/burpee.jpg', detail: 'Full extension at top', sets: { 1:'40s × 4', 2:'40s × 4', 3:'45s × 5', 4:'45s × 5' } },
+      { name: 'Cool-down', img:'images/exercises/stretch.jpg', detail: 'Slow breathing + stretch', sets: { 1:'3 min', 2:'3 min', 3:'3 min', 4:'3 min' } },
+    ]
+  },
+  {
+    day: 'Wed', badge: 'strength', title: 'Lower Body Strength',
+    icon: 'LEG', dotClass: 'dot-strength',
+    exercises: [
+      { name: 'DB Deadlift', img:'images/exercises/deadlift.jpg', detail: '10 kg', sets: { 1:'4×6', 2:'4×7', 3:'4×8', 4:'4×8 heavier if ready' } },
+      { name: 'Goblet Squat', img:'images/exercises/squat.jpg', detail: '8–10 kg', sets: { 1:'4×6', 2:'4×8', 3:'4×10', 4:'4×10 @10kg' } },
+      { name: 'Reverse Lunge', img:'images/exercises/lunge.jpg', detail: '6–8 kg each hand', sets: { 1:'3×8 each', 2:'3×9 each', 3:'3×10 each', 4:'3×10 @8kg' } },
+      { name: 'Glute Bridge', img:'images/exercises/stretch.jpg', detail: '10 kg on hips, 3 sec hold at top', sets: { 1:'3×12', 2:'3×14', 3:'3×15', 4:'3×15' } },
+      { name: 'Calf Raises', img:'images/exercises/lunge.jpg', detail: 'Hold 8 kg dumbbells', sets: { 1:'3×15', 2:'3×15', 3:'3×18', 4:'3×20' } },
+    ]
+  },
+  {
+    day: 'Thu', badge: 'recovery', title: 'Active Recovery',
+    icon: 'REC', dotClass: 'dot-recovery',
+    exercises: [
+      { name: 'Hip Flexor Stretch', img:'images/exercises/yoga.jpg', detail: 'Each side', sets: { 1:'60 sec', 2:'60 sec', 3:'75 sec', 4:'75 sec' } },
+      { name: 'Cat-Cow', img:'images/exercises/yoga.jpg', detail: 'Slow and controlled', sets: { 1:'10 reps', 2:'10 reps', 3:'12 reps', 4:'12 reps' } },
+      { name: "Child's Pose", img:'images/exercises/yoga.jpg', detail: 'Arms extended', sets: { 1:'60 sec', 2:'60 sec', 3:'90 sec', 4:'90 sec' } },
+      { name: 'Shoulder & Neck Rolls', img:'images/exercises/stretch.jpg', detail: 'Release tension from desk work', sets: { 1:'2 min', 2:'2 min', 3:'2 min', 4:'2 min' } },
+      { name: 'Spinal Twist', img:'images/exercises/yoga.jpg', detail: 'Each side', sets: { 1:'45 sec', 2:'45 sec', 3:'60 sec', 4:'60 sec' } },
+    ]
+  },
+  {
+    day: 'Fri', badge: 'strength', title: 'Full Body Strength',
+    icon: 'FBD', dotClass: 'dot-strength',
+    exercises: [
+      { name: 'DB Push Press', img:'images/exercises/shoulder-press.jpg', detail: '6–8 kg', sets: { 1:'4×6', 2:'4×7', 3:'4×8', 4:'4×8 @8kg' } },
+      { name: 'Sumo Squat', img:'images/exercises/squat.jpg', detail: '10 kg, 2 sec descent', sets: { 1:'4×8', 2:'4×8', 3:'4×10', 4:'4×10' } },
+      { name: 'Renegade Row', img:'images/exercises/bent-over-row.jpg', detail: '6–8 kg, brace core hard', sets: { 1:'3×8 each', 2:'3×8 each', 3:'3×10 each', 4:'3×10 @8kg' } },
+      { name: 'Plank DB Pull-Through', img:'images/exercises/plank.jpg', detail: '4–6 kg', sets: { 1:'3×10 each', 2:'3×10 each', 3:'3×12 each', 4:'3×12 each' } },
+      { name: 'Hollow Body Hold', img:'images/exercises/plank.jpg', detail: 'Core finisher', sets: { 1:'3×20 sec', 2:'3×25 sec', 3:'3×30 sec', 4:'3×30 sec' } },
+    ]
+  },
+  {
+    day: 'Sat', badge: 'endurance', title: 'Endurance Session',
+    icon: 'END', dotClass: 'dot-endurance',
+    exercises: [
+      { name: 'Stair Intervals', img:'images/exercises/burpee.jpg', detail: 'Up-down = 1 round', sets: { 1:'× 15 rounds', 2:'× 15 rounds', 3:'× 20 rounds', 4:'× 20 rounds' } },
+      { name: 'DB Complex (5 kg)', img:'images/exercises/deadlift.jpg', detail: 'Curl → Press → Squat → Row, no rest between', sets: { 1:'3 rounds × 8', 2:'3 rounds × 8', 3:'4 rounds × 8', 4:'4 rounds × 10' } },
+      { name: 'Puppy Floor Play', img:'images/exercises/stretch.jpg', detail: 'Active playtime counts!', sets: { 1:'10 min', 2:'10 min', 3:'10 min', 4:'10 min' } },
+      { name: 'Cool-Down Stretch', img:'images/exercises/yoga.jpg', detail: 'Full body', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' } },
+    ]
+  },
+  {
+    day: 'Sun', badge: 'rest', title: 'Rest & Prep',
+    icon: 'REST', dotClass: 'dot-rest',
+    exercises: [
+      { name: 'Light Movement', img:'images/exercises/stretch.jpg', detail: "Don't sit all day — walk around apartment", sets: { 1:'As needed', 2:'As needed', 3:'As needed', 4:'As needed' } },
+      { name: 'Hydration', img:'images/exercises/yoga.jpg', detail: '3L water today', sets: { 1:'✓', 2:'✓', 3:'✓', 4:'✓' } },
+      { name: 'Meal Prep', img:'images/recipes/sambar.jpg', detail: 'Sambar, eggs, batter, chopped veggies', sets: { 1:'45 min', 2:'45 min', 3:'45 min', 4:'45 min' } },
+      { name: 'Log Weights', img:'images/exercises/shoulder-press.jpg', detail: 'Note what you lifted this week', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' } },
+    ]
+  },
+];
+
+const MEALS = [
+  { day: 'Mon', img:'images/meals/dosa.jpg', breakfast: { emoji:'🥚', text:'Egg dosa + tomato chutney' }, lunch: { emoji:'🍛', text:'Rice + sambar + beans fry + curd' }, dinner: { emoji:'🫓', text:'Dosa (2) + coconut chutney' }, snack: { emoji:'🥜', text:'Roasted groundnuts + buttermilk' } },
+  { day: 'Tue', img:'images/meals/ragi.jpg', breakfast: { emoji:'🌾', text:'Ragi porridge + jaggery' }, lunch: { emoji:'🍛', text:'Rice + rasam + potato fry + papad' }, dinner: { emoji:'🥣', text:'Oats upma + boiled egg' }, snack: { emoji:'🍌', text:'Banana + 2 dates' } },
+  { day: 'Wed', img:'images/meals/eggs.jpg', breakfast: { emoji:'🥚', text:'Boiled eggs (2–3) + banana' }, lunch: { emoji:'🍛', text:'Rice + kootu + pickle + curd' }, dinner: { emoji:'🍳', text:'Egg bhurji + 2 rotis' }, snack: { emoji:'🥛', text:'Buttermilk + handful groundnuts' } },
+  { day: 'Thu', img:'images/meals/idli.jpg', breakfast: { emoji:'🍚', text:'Curd rice + carrot + mustard tadka' }, lunch: { emoji:'🍛', text:'Rice + sambar + cabbage fry' }, dinner: { emoji:'🍤', text:'Rava idli (3) + sambar' }, snack: { emoji:'🍈', text:'Papaya / banana' } },
+  { day: 'Fri', img:'images/meals/rice-sambar.jpg', breakfast: { emoji:'🍞', text:'Banana + peanut butter on multigrain toast' }, lunch: { emoji:'🍋', text:'Curd rice + lemon rice + papad' }, dinner: { emoji:'🫓', text:'Dosa + leftover chutney' }, snack: { emoji:'🥜', text:'Chikki or roasted makhana' } },
+  { day: 'Sat', img:'images/meals/pongal.jpg', breakfast: { emoji:'🍲', text:'Pongal + coconut chutney + sambar' }, lunch: { emoji:'🥘', text:'Bisi bele bath + raita + papad' }, dinner: { emoji:'🛵', text:'Treat meal — order out guilt-free' }, snack: { emoji:'🥥', text:'Coconut water + fruit' } },
+  { day: 'Sun', img:'images/meals/idli.jpg', breakfast: { emoji:'🍜', text:'Idiyappam + coconut milk' }, lunch: { emoji:'🍛', text:'Full meals — rice, sambar, rasam, kootu' }, dinner: { emoji:'🥣', text:'Khichdi + papad + pickle' }, snack: { emoji:'📦', text:'Prep snacks for week (boil eggs)' } },
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+
+function getState() { return JSON.parse(localStorage.getItem('fitplan_v3') || '{}'); }
+function saveState(s) { localStorage.setItem('fitplan_v3', JSON.stringify(s)); }
+
+let activeWeek = 1;
+let activeMealDay = 0;
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+
+function getTodayDayName() {
+  const names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  return names[new Date().getDay()];
+}
+
+function getTodaySchedule() {
+  const d = getTodayDayName();
+  return SCHEDULE.find(s => s.day === d) || SCHEDULE[0];
+}
+
+function getExId(week, dayName, ei) { return `w${week}-${dayName}-e${ei}`; }
+
+function isExDone(week, dayName, ei) { return !!getState()[getExId(week, dayName, ei)]; }
+
+function toggleEx(week, dayName, ei) {
+  const s = getState();
+  const id = getExId(week, dayName, ei);
+  s[id] = !s[id];
+  saveState(s);
+  refreshAll();
+}
+
+function isDayDone(week, dayName) {
+  const sched = SCHEDULE.find(s => s.day === dayName);
+  if (!sched) return false;
+  return sched.exercises.every((_, ei) => isExDone(week, dayName, ei));
+}
+
+function getWeekPct(week) {
+  let total = 0, done = 0;
+  SCHEDULE.forEach(({ day, exercises }) => {
+    exercises.forEach((_, ei) => {
+      total++;
+      if (isExDone(week, day, ei)) done++;
+    });
+  });
+  return total ? Math.round((done / total) * 100) : 0;
+}
+
+function getTotalPct() {
+  let total = 0, done = 0;
+  for (let w = 1; w <= 4; w++) {
+    SCHEDULE.forEach(({ day, exercises }) => {
+      exercises.forEach((_, ei) => {
+        total++;
+        if (isExDone(w, day, ei)) done++;
+      });
+    });
+  }
+  return total ? Math.round((done / total) * 100) : 0;
+}
+
+function countCompletedDays() {
+  let count = 0;
+  for (let w = 1; w <= 4; w++) {
+    SCHEDULE.forEach(({ day }) => { if (isDayDone(w, day)) count++; });
+  }
+  return count;
+}
+
+// ── RENDER EXERCISE LIST ──────────────────────────────────────────────────────
+
+function renderExerciseList(week, sched, expanded) {
+  return sched.exercises.map((ex, ei) => {
+    const done = isExDone(week, sched.day, ei);
+    const setStr = ex.sets[week] || ex.sets[1];
+    const imgHtml = ex.img
+      ? `<div class="ex-img-wrap"><img src="${ex.img}" alt="${ex.name}" onerror="this.parentElement.style.display='none'"></div>`
+      : '';
+    return `<div class="ex-item${done ? ' done' : ''}">
+      ${imgHtml}
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;flex:1;" onclick="toggleEx(${week},'${sched.day}',${ei})">
+        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation();toggleEx(${week},'${sched.day}',${ei})" style="margin-top:2px;accent-color:var(--orange);width:16px;height:16px;flex-shrink:0;cursor:pointer;">
+        <span class="ex-text"><strong>${ex.name}</strong> <span style="color:var(--text-soft);font-weight:400;">— ${setStr}</span><br><span style="font-size:0.76rem;color:#9ca3af;">${ex.detail}</span></span>
+      </label>
+    </div>`;
+  }).join('');
+}
+
+// ── TODAY PAGE ────────────────────────────────────────────────────────────────
+
+function buildToday() {
+  const sched = getTodaySchedule();
+  const todayName = getTodayDayName();
+  const meal = MEALS.find(m => m.day === todayName) || MEALS[0];
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const dateStr = new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long' });
+
+  document.getElementById('today-heading').textContent = `Good ${new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening'} 👋`;
+  document.getElementById('today-date').textContent = dateStr;
+
+  const allDone = isDayDone(activeWeek, sched.day);
+
+  document.getElementById('today-banner-area').innerHTML = `
+    <div class="today-banner">
+      <div class="day-info">
+        <h3>${sched.title}</h3>
+        <p>Week ${activeWeek} · ${sched.exercises.length} exercises · ${sched.badge}</p>
+      </div>
+      <div class="today-badge">${allDone ? '✅ Done!' : sched.badge.toUpperCase()}</div>
+    </div>`;
+
+  const exList = renderExerciseList(activeWeek, sched, true);
+  document.getElementById('today-workout-area').innerHTML = `
+    <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-soft);margin-bottom:10px;">Today's Workout</div>
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:24px;">
+      <div class="exercise-list">${exList}</div>
+    </div>`;
+
+  document.getElementById('today-meal-area').innerHTML = `
+    <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-soft);margin-bottom:10px;">Today's Meals</div>
+    <div class="meal-slots">
+      <div class="meal-slot-card"><div class="msc-emoji">${meal.breakfast.emoji}</div><div class="msc-label">Breakfast</div><div class="msc-value">${meal.breakfast.text}</div></div>
+      <div class="meal-slot-card"><div class="msc-emoji">${meal.lunch.emoji}</div><div class="msc-label">Lunch</div><div class="msc-value">${meal.lunch.text}</div></div>
+      <div class="meal-slot-card"><div class="msc-emoji">${meal.dinner.emoji}</div><div class="msc-label">Dinner</div><div class="msc-value">${meal.dinner.text}</div></div>
+      <div class="meal-slot-card"><div class="msc-emoji">${meal.snack.emoji}</div><div class="msc-label">Snack</div><div class="msc-value">${meal.snack.text}</div></div>
+    </div>`;
+}
+
+// ── WORKOUTS PAGE ─────────────────────────────────────────────────────────────
+
+function buildWeekTabs() {
+  document.getElementById('weekTabs').innerHTML = [1,2,3,4].map(w => {
+    const pct = getWeekPct(w);
+    return `<button class="week-tab${w === activeWeek ? ' active' : ''}" onclick="setWeek(${w})">
+      Week ${w} <span class="wpct">${pct}%</span>
+    </button>`;
+  }).join('');
+}
+
+function buildWeekContent() {
+  const todayDay = getTodayDayName();
+  document.getElementById('weekContent').innerHTML = SCHEDULE.map(sched => {
+    const done = isDayDone(activeWeek, sched.day);
+    const isToday = sched.day === todayDay;
+    const exDone = sched.exercises.filter((_,ei) => isExDone(activeWeek, sched.day, ei)).length;
+    const total = sched.exercises.length;
+    const expanded = isToday || done ? ' expanded' : '';
+
+    const img = WORKOUT_IMAGES[sched.day] || '';
+    return `<div class="day-row${isToday ? ' is-today' : ''}${done ? ' is-done' : ''}${expanded}" id="row-${activeWeek}-${sched.day}">
+      <div class="day-row-header" onclick="toggleRow('${activeWeek}-${sched.day}')">
+        <img src="${img}" alt="${sched.title}" class="day-row-img" onerror="this.style.display='none'">
+        <div class="day-row-meta">
+          <div class="dr-day">${sched.day}${isToday ? ' · Today' : ''}</div>
+          <div class="dr-title">${sched.title}</div>
+          <span class="badge-pill badge-${sched.badge}">${sched.badge}</span>
+        </div>
+        <div class="day-row-right">
+          <span class="done-count">${exDone}/${total}</span>
+          ${isToday ? '<span class="today-pill">Today</span>' : ''}
+          ${done ? '<span class="done-pill">Done ✓</span>' : ''}
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="day-row-body">
+        <div class="exercise-list">${renderExerciseList(activeWeek, sched, true)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setWeek(w) {
+  activeWeek = w;
+  buildWeekTabs();
+  buildWeekContent();
+  buildToday();
+}
+
+function toggleRow(id) {
+  const el = document.getElementById(`row-${id}`);
+  if (el) el.classList.toggle('expanded');
+}
+
+// ── MEALS PAGE ────────────────────────────────────────────────────────────────
+
+function buildMeals() {
+  document.getElementById('mealDayTabs').innerHTML = MEALS.map((m, i) =>
+    `<button class="mday-tab${i === activeMealDay ? ' active' : ''}" onclick="setMealDay(${i})">${m.day}</button>`
+  ).join('');
+
+  document.getElementById('mealDayContent').innerHTML = MEALS.map((m, i) => `
+    <div class="meal-detail${i === activeMealDay ? ' active' : ''}">
+      <div class="meal-hero-img-wrap">
+        <img src="${m.img}" alt="${m.day} meals" class="meal-hero-img" onerror="this.parentElement.style.display='none'">
+      </div>
+      <div class="meal-slots">
+        <div class="meal-slot-card"><div class="msc-emoji">${m.breakfast.emoji}</div><div class="msc-label">Breakfast</div><div class="msc-value">${m.breakfast.text}</div></div>
+        <div class="meal-slot-card"><div class="msc-emoji">${m.lunch.emoji}</div><div class="msc-label">Lunch</div><div class="msc-value">${m.lunch.text}</div></div>
+        <div class="meal-slot-card"><div class="msc-emoji">${m.dinner.emoji}</div><div class="msc-label">Dinner</div><div class="msc-value">${m.dinner.text}</div></div>
+        <div class="meal-slot-card"><div class="msc-emoji">${m.snack.emoji}</div><div class="msc-label">Snack</div><div class="msc-value">${m.snack.text}</div></div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('mealInfoGrid').innerHTML = `
+    <div class="ig-card"><h4>Sunday Prep (45 min)</h4><ul>
+      <li>Boil 8 eggs for the week</li><li>Make big pot of sambar</li>
+      <li>Soak / buy idli-dosa batter</li><li>Chop onions, tomatoes, veggies</li>
+      <li>Cook toor dal in bulk</li></ul></div>
+    <div class="ig-card"><h4>Protein Boosters</h4><ul>
+      <li>2 boiled eggs with any meal</li><li>Thicken sambar with more dal</li>
+      <li>Rajma / chickpea curry 2×/week</li><li>Peanuts in upma, poha, rice</li>
+      <li>Curd with every lunch</li></ul></div>
+    <div class="ig-card"><h4>Always-Stocked Snacks</h4><ul>
+      <li>Roasted groundnuts</li><li>Banana / papaya</li>
+      <li>Buttermilk (chaas)</li><li>Dates (2–3 for energy)</li>
+      <li>Boiled eggs (Sunday batch)</li></ul></div>
+    <div class="ig-card"><h4>Hydration</h4><ul>
+      <li>You: 2.5–3L water/day</li><li>Husband: 1L bottle on desk (visual cue)</li>
+      <li>Buttermilk counts toward fluids</li><li>Set reminder every 90 min</li>
+      <li>Coconut water OK, avoid sugary drinks</li></ul></div>
+    <div class="ig-card"><h4>Progressive Overload</h4><ul>
+      <li>Week 1: Form focus, 4×6 compounds</li><li>Week 2: +1 rep → 4×7</li>
+      <li>Week 3: +1 rep → 4×8</li><li>Week 4: +0.5–1 kg, back to 4×6</li>
+      <li>Last 2 reps feel easy? Go heavier</li></ul></div>`;
+}
+
+function setMealDay(i) {
+  activeMealDay = i;
+  document.querySelectorAll('.mday-tab').forEach((el, idx) => el.classList.toggle('active', idx === i));
+  document.querySelectorAll('.meal-detail').forEach((el, idx) => el.classList.toggle('active', idx === i));
+}
+
+// ── PROGRESS PAGE ─────────────────────────────────────────────────────────────
+
+function buildProgress() {
+  const pct = getTotalPct();
+  const total = 4 * SCHEDULE.reduce((a, s) => a + s.exercises.length, 0);
+  const done = Math.round(total * pct / 100);
+  const completedDays = countCompletedDays();
+
+  document.getElementById('streakCard').innerHTML = `
+    <div class="streak-card">
+      <div class="streak-num">${completedDays}</div>
+      <div class="streak-text"><h3>Days Completed</h3><p>Keep it up — consistency beats perfection</p></div>
+    </div>`;
+
+  document.getElementById('statRow').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${done}</div><div class="stat-lbl">Tasks Done</div></div>
+    <div class="stat-card"><div class="stat-num">${total - done}</div><div class="stat-lbl">Remaining</div></div>
+    <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-lbl">Month Done</div></div>
+    <div class="stat-card"><div class="stat-num">${28 - completedDays}</div><div class="stat-lbl">Days Left</div></div>`;
+
+  document.getElementById('wkBars').innerHTML = [1,2,3,4].map(w => {
+    const p = getWeekPct(w);
+    return `<div class="wk-bar-row">
+      <div class="wk-bar-lbl">Week ${w}</div>
+      <div class="wk-bar-track"><div class="wk-bar-fill" style="width:${p}%"></div></div>
+      <div class="wk-bar-pct">${p}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+
+function updateSidebar() {
+  const pct = getTotalPct();
+  document.getElementById('sb-pct').textContent = pct + '%';
+  document.getElementById('sb-bar').style.width = pct + '%';
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+
+function showPage(name, mobileEl) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.bn-item').forEach(el => el.classList.remove('active'));
+
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll(`.nav-item`).forEach(el => {
+    if (el.getAttribute('onclick') && el.getAttribute('onclick').includes(name)) el.classList.add('active');
+  });
+  if (mobileEl) mobileEl.classList.add('active');
+
+  if (name === 'progress') buildProgress();
+  if (name === 'recipes') buildRecipes();
+  if (name === 'puppy') buildPuppy();
+  return false;
+}
+
+// ── REFRESH ALL ───────────────────────────────────────────────────────────────
+
+function refreshAll() {
+  buildToday();
+  buildWeekTabs();
+  buildWeekContent();
+  buildProgress();
+  updateSidebar();
+}
+
+function resetAll() {
+  if (confirm('Reset all progress for this month?')) {
+    localStorage.removeItem('fitplan_v3');
+    refreshAll();
+  }
+}
+
+// ── RECIPES DATA & BUILD ─────────────────────────────────────────────────────
+
+const RECIPE_CATS = ['Sunday Prep', 'Breakfast', 'Lunch & Dinner', 'Quick Fixes'];
+
+const RECIPES = {
+  'Sunday Prep': {
+    intro: 'Do these once on Sunday. They power most of your week. Estimated total time: 45 min.',
+    prepChecklist: [
+      'Boil 8 eggs — covers snacks + breakfast all week',
+      'Make big pot of sambar (enough for 3 days)',
+      'Cook toor dal in pressure cooker — rasam base',
+      'Buy or soak idli-dosa batter (or buy ready batter from store)',
+      'Chop and store: 1 onion, 2 tomatoes, 2 green chillies, coriander — in separate containers',
+      'Wash and store veggies (beans, carrot, cabbage) in fridge',
+    ],
+    recipes: [
+      {
+        emoji: '🫙', name: 'Sambar (Big Batch)', img:'images/recipes/sambar.jpg', time: '25 min', difficulty: 'Easy', serves: '4–5 meals',
+        ingredients: ['1 cup toor dal', '2 tomatoes', '1 drumstick (optional)', '1 onion', 'Tamarind (lemon-sized ball)', 'Sambar powder 2 tsp', 'Turmeric ¼ tsp', 'Salt', 'Oil + mustard + curry leaves'],
+        steps: [
+          'Pressure cook toor dal with 2 cups water and turmeric — 3 whistles. Mash it.',
+          'Soak tamarind in ½ cup warm water for 5 min, squeeze out the liquid.',
+          'In a pot, heat 1 tsp oil. Add mustard seeds — wait for them to splutter.',
+          'Add curry leaves, chopped onion. Cook 2 min on medium flame.',
+          'Add chopped tomatoes. Cook 3 min until soft.',
+          'Add tamarind water, sambar powder, salt. Boil 5 min.',
+          'Add mashed dal. Mix well. Simmer 5 min. Done.',
+          'Store in fridge. Reheat small portions as needed — lasts 3 days.',
+        ],
+        tip: 'No drumstick? Skip it. Add any vegetable you have — potato, brinjal, carrot all work.',
+      },
+      {
+        emoji: '🥚', name: 'Batch Boiled Eggs', img:'images/recipes/boiled-eggs.jpg', time: '12 min', difficulty: 'Easiest', serves: '8 eggs',
+        ingredients: ['8 eggs', 'Water', 'Salt (optional)'],
+        steps: [
+          'Place eggs in a pot. Fill water until eggs are submerged.',
+          'Bring to boil on high flame.',
+          'Once boiling, lower to medium. Set timer for 10 min.',
+          'After 10 min, drain hot water. Fill pot with cold water.',
+          'Let cool 5 min. Peel or store as-is in fridge.',
+          'They last 5 days in fridge unpeeled.',
+        ],
+        tip: 'Hardboiled eggs are your best friend — grab one when you have no time for breakfast.',
+      },
+    ]
+  },
+  'Breakfast': {
+    intro: 'All under 10 min. Pick what you have in the fridge.',
+    recipes: [
+      {
+        emoji: '🥚', name: 'Egg Dosa', img:'images/recipes/egg-dosa.jpg', time: '10 min', difficulty: 'Easy', serves: '1 person',
+        ingredients: ['Ready dosa batter ½ cup', '2 eggs', '1 small onion (chopped)', '1 green chilli (optional)', 'Salt', 'Oil'],
+        steps: [
+          'Heat a flat pan (tawa) on medium flame. Spread a few drops of oil.',
+          'Pour ½ cup batter onto the centre. Spread in a circle using the back of a spoon.',
+          'Break 2 eggs directly on top of the dosa.',
+          'Sprinkle chopped onion, green chilli, pinch of salt on the eggs.',
+          'Cover with a lid. Cook 2–3 min until egg white sets.',
+          'Fold or serve flat. Eat with chutney or ketchup.',
+        ],
+        tip: 'Use store-bought dosa batter — no fermentation needed. Brands like iD Fresh work great.',
+      },
+      {
+        emoji: '🌾', name: 'Ragi Porridge', img:'images/meals/ragi.jpg', time: '8 min', difficulty: 'Easiest', serves: '1 person',
+        ingredients: ['2 tbsp ragi flour', '1 cup milk (or water)', '1 tsp jaggery / honey', 'Pinch cardamom powder'],
+        steps: [
+          'Mix ragi flour with 3 tbsp cold water first — this prevents lumps.',
+          'Heat milk in a small pot on medium flame.',
+          'When milk is warm (not boiling), pour in the ragi paste slowly while stirring.',
+          'Keep stirring on low flame for 3–4 min until it thickens.',
+          'Add jaggery and cardamom. Mix. Done.',
+        ],
+        tip: 'Mix with cold water BEFORE adding to hot milk — this is the only trick you need for lump-free porridge.',
+      },
+      {
+        emoji: '🥣', name: 'Oats Upma', img:'images/meals/upma.jpg', time: '10 min', difficulty: 'Easy', serves: '1 person',
+        ingredients: ['½ cup rolled oats', '1 small onion', '1 tomato', 'Mustard seeds ¼ tsp', 'Curry leaves', 'Green chilli 1', 'Salt', 'Oil 1 tsp', 'Water ½ cup'],
+        steps: [
+          'Heat 1 tsp oil in a pan. Add mustard seeds — wait for splutter.',
+          'Add curry leaves and chopped green chilli. Stir 10 seconds.',
+          'Add finely chopped onion. Cook 2 min on medium until translucent.',
+          'Add chopped tomato. Cook 2 min.',
+          'Add oats. Stir and mix with the veggies for 1 min.',
+          'Add ½ cup water and salt. Stir. Cover and cook 2 min.',
+          'Open, fluff, serve. Can add peanuts for crunch.',
+        ],
+        tip: 'Oats upma tastes better than it sounds. The mustard-curry leaf tadka is what makes it South Indian.',
+      },
+    ]
+  },
+  'Lunch & Dinner': {
+    intro: 'Simple, filling, ready in 20–30 min.',
+    recipes: [
+      {
+        emoji: '🥔', name: 'Potato Fry (Aloo Fry)', img:'images/recipes/potato-fry.jpg', time: '15 min', difficulty: 'Easy', serves: '2 people',
+        ingredients: ['2 medium potatoes', 'Mustard seeds ¼ tsp', 'Curry leaves', 'Turmeric ¼ tsp', 'Red chilli powder ½ tsp', 'Salt', 'Oil 2 tsp'],
+        steps: [
+          'Wash and chop potatoes into small cubes (1 cm). No need to peel if you wash well.',
+          'Heat 2 tsp oil in a pan on medium flame.',
+          'Add mustard seeds. Wait for them to pop (5 sec).',
+          'Add curry leaves. Careful — they splutter!',
+          'Add potato cubes. Spread flat in pan.',
+          'Add turmeric, chilli powder, salt. Mix.',
+          'Cover and cook 8 min on low-medium flame.',
+          'Open, stir, check if soft. Cook uncovered 2 more min for crispy edges.',
+        ],
+        tip: 'Small cubes cook faster. If they stick, add a tablespoon of water and cover again.',
+      },
+      {
+        emoji: '🍳', name: 'Egg Bhurji', img:'images/recipes/egg-bhurji.jpg', time: '10 min', difficulty: 'Easiest', serves: '1–2 people',
+        ingredients: ['3 eggs', '1 onion', '1 tomato', '1 green chilli', 'Turmeric ¼ tsp', 'Salt', 'Oil 1 tsp', 'Coriander (optional)'],
+        steps: [
+          'Finely chop onion, tomato, green chilli.',
+          'Heat 1 tsp oil in pan. Add onion. Cook 2 min.',
+          'Add tomato and green chilli. Cook 2 min until tomato softens.',
+          'Add turmeric and salt. Mix.',
+          'Beat 3 eggs in a bowl. Pour into the pan.',
+          'Keep stirring on medium heat — scramble everything together.',
+          'Cook until no runny egg remains (2–3 min). Garnish with coriander.',
+        ],
+        tip: 'Egg bhurji + 2 rotis = perfect 10-min dinner. Your husband will request this every week.',
+      },
+      {
+        emoji: '🥘', name: 'Bisi Bele Bath', img:'images/meals/pongal.jpg', time: '30 min', difficulty: 'Medium', serves: '3–4 people',
+        ingredients: ['½ cup rice', '¼ cup toor dal', '1 cup mixed veggies (carrot, beans, peas)', '2 tbsp bisi bele bath powder (store-bought)', 'Tamarind paste 1 tsp', 'Salt', 'Ghee 1 tsp', 'Cashews handful', 'Mustard + curry leaves'],
+        steps: [
+          'Pressure cook rice and dal together with 3 cups water — 4 whistles.',
+          'In a separate pot, boil veggies until just soft (5 min).',
+          'Mash the cooked rice-dal mixture roughly.',
+          'Add cooked veggies to the rice-dal. Mix.',
+          'Add bisi bele bath powder, tamarind paste, salt. Mix well.',
+          'Add ½ cup water if too thick. Simmer 5 min.',
+          'In a small pan, heat ghee. Fry cashews golden. Add mustard + curry leaves.',
+          'Pour this tadka over the dish. Mix and serve.',
+        ],
+        tip: 'Store-bought bisi bele bath powder (MTR brand) does all the spice work. You just cook the base.',
+      },
+      {
+        emoji: '🍚', name: 'Curd Rice', img:'images/recipes/curd-rice.jpg', time: '5 min', difficulty: 'Easiest', serves: '1 person',
+        ingredients: ['1 cup cooked leftover rice', '½ cup curd (yogurt)', 'Mustard seeds ¼ tsp', 'Curry leaves', 'Green chilli 1', 'Grated carrot (optional)', 'Salt', 'Oil ½ tsp'],
+        steps: [
+          'Mix rice with curd until creamy. Add salt.',
+          'Heat ½ tsp oil in a small pan (or ladle).',
+          'Add mustard seeds. Wait for pop.',
+          'Add curry leaves and slit green chilli. Sizzle 10 sec.',
+          'Pour this tadka over curd rice. Mix.',
+          'Top with grated carrot for freshness.',
+        ],
+        tip: 'This is your emergency meal — leftover rice + curd you always have. Done in 5 min, incredibly soothing.',
+      },
+    ]
+  },
+  'Quick Fixes': {
+    intro: 'For days when you have zero time or energy. Under 5 min.',
+    recipes: [
+      {
+        emoji: '🍌', name: 'No-Cook Breakfast', img:'images/recipes/boiled-eggs.jpg', time: '2 min', difficulty: 'Easiest', serves: '1 person',
+        ingredients: ['2–3 boiled eggs (from Sunday batch)', '1 banana', 'Glass of water or buttermilk'],
+        steps: [
+          'Peel eggs from the fridge.',
+          'Grab a banana.',
+          'Eat. Done.',
+        ],
+        tip: "This sounds silly but it's genuinely nutritious — protein from eggs, carbs + potassium from banana. On sprint days, this is enough.",
+      },
+      {
+        emoji: '🥛', name: 'Instant Buttermilk', img:'images/meals/idli.jpg', time: '1 min', difficulty: 'Easiest', serves: '1 person',
+        ingredients: ['½ cup curd', '1 cup cold water', 'Pinch salt', 'Pinch cumin powder', 'Curry leaves (optional)'],
+        steps: [
+          'Put curd, water, salt, cumin in a glass.',
+          'Whisk with a fork or shake in a bottle.',
+          'Done.',
+        ],
+        tip: 'Probiotic, hydrating, and keeps you full between meals. Better than any packaged drink.',
+      },
+      {
+        emoji: '🫓', name: 'Peanut Butter Toast', img:'images/recipes/peanut-toast.jpg', time: '3 min', difficulty: 'Easiest', serves: '1 person',
+        ingredients: ['2 slices multigrain bread', '1 tbsp peanut butter', '½ banana (sliced)'],
+        steps: [
+          'Toast the bread (or eat as-is).',
+          'Spread peanut butter.',
+          'Top with banana slices.',
+        ],
+        tip: 'Keep a jar of peanut butter in the kitchen at all times. It is your fastest protein source.',
+      },
+    ]
+  }
+};
+
+let activeRecipeCat = 'Sunday Prep';
+
+function buildRecipes() {
+  // Tabs
+  document.getElementById('recipeTabs').innerHTML = RECIPE_CATS.map(cat =>
+    `<button class="recipe-tab${cat === activeRecipeCat ? ' active' : ''}" onclick="setRecipeCat('${cat}')">${cat}</button>`
+  ).join('');
+
+  const cat = RECIPES[activeRecipeCat];
+  let html = `<p style="font-size:0.85rem;color:var(--text-soft);margin-bottom:18px;">${cat.intro}</p>`;
+
+  if (cat.prepChecklist) {
+    html += `<div style="background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:18px;">
+      <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-soft);margin-bottom:12px;">Sunday Checklist</div>
+      <ul class="prep-checklist">${cat.prepChecklist.map(item => `<li>${item}</li>`).join('')}</ul>
+    </div>`;
+  }
+
+  html += `<div class="recipe-cards">${cat.recipes.map((r, ri) => `
+    <div class="recipe-card" id="rc-${activeRecipeCat}-${ri}">
+      <div class="rc-header" onclick="toggleRecipe('${activeRecipeCat}',${ri})">
+        <div class="rc-emoji">${r.emoji}</div>
+        <div class="rc-meta">
+          <h3>${r.name}</h3>
+          <p>Serves ${r.serves}</p>
+          <div class="rc-pills">
+            <span class="rc-pill">${r.time}</span>
+            <span class="rc-pill ${r.difficulty === 'Easiest' ? 'green' : r.difficulty === 'Medium' ? 'blue' : ''}">${r.difficulty}</span>
+          </div>
+        </div>
+        <span class="rc-chevron">▼</span>
+      </div>
+      <div class="rc-body">
+        ${r.img ? `<img src="${r.img}" alt="${r.name}" class="rc-food-img" onerror="this.style.display='none'">` : ''}
+        <div class="rc-section-title">Ingredients</div>
+        <div class="rc-ingredients">${r.ingredients.map(i => `<span class="rc-ing">${i}</span>`).join('')}</div>
+        <div class="rc-section-title">Steps</div>
+        <ol class="rc-steps">${r.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+        <div class="rc-tip">💡 ${r.tip}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+
+  document.getElementById('recipeContent').innerHTML = html;
+}
+
+function setRecipeCat(cat) {
+  activeRecipeCat = cat;
+  buildRecipes();
+}
+
+function toggleRecipe(cat, ri) {
+  const el = document.getElementById(`rc-${cat}-${ri}`);
+  if (el) el.classList.toggle('expanded');
+}
+
+// ── PUPPY SCHEDULE ───────────────────────────────────────────────────────────
+
+const WEEKDAY_SCHEDULE = [
+  { time: '6:00 AM', type: 'puppy', title: '🐶 Puppy wakes — potty time', note: 'Lay a fresh pad. He\'ll go within minutes of waking. This is your 5–10 min window.' },
+  { time: '6:10 AM', type: 'workout', title: '💪 YOUR WORKOUT', note: 'He napped after his morning potty. 25–30 min window — this is your non-negotiable training time.' },
+  { time: '6:45 AM', type: 'meal', title: '🍳 Your breakfast', note: 'Quick option — egg dosa, boiled eggs + banana, or ragi porridge. Eat before screens.' },
+  { time: '7:30 AM', type: 'work', title: '💻 Work begins', note: 'Log in. Puppy naps 1–2 hrs after his morning wake — deep work block starts now.' },
+  { time: '8:45 AM', type: 'puppy', title: '🐶 Potty break', note: '~90 min after waking. 5 min break — do 15 squats or a stretch while he goes.' },
+  { time: '9:00 AM', type: 'puppy', title: '🐶 Puppy Meal 1 + play', note: 'First feed of the day. He\'ll eat, play briefly, then nap. 10 min floor play with him — good for both of you.' },
+  { time: '9:20 AM', type: 'work', title: '💻 Work block (puppy naps)', note: 'Post-feed nap = your longest uninterrupted work window. Protect this. ~2–2.5 hrs.' },
+  { time: '11:00 AM', type: 'puppy', title: '🐶 Potty break + playtime', note: 'Mid-morning potty. Active floor play 10 min. Use a toy — lets you stretch while engaging him.' },
+  { time: '12:30 PM', type: 'puppy', title: '🐶 Potty break', note: 'Quick check before lunch. Do 20 calf raises or hip circles while waiting.' },
+  { time: '1:00 PM', type: 'meal', title: '🍛 Your lunch', note: 'Heat Sunday-prepped sambar + rice. Eat away from screen. 20 min minimum — you deserve a real break.' },
+  { time: '1:30 PM', type: 'work', title: '💻 Afternoon work block', note: 'Puppy may nap post-midday activity. Your second focused work window.' },
+  { time: '2:45 PM', type: 'puppy', title: '🐶 Potty break', note: '~90 min since last potty. Quick break — walk to the pad, do a stretch, come back.' },
+  { time: '3:00 PM', type: 'puppy', title: '🐶 Puppy Meal 2 + playtime', note: 'Second feed. Let him eat, then 10 min play. He\'ll settle into a nap after — use it for work or your snack.' },
+  { time: '3:20 PM', type: 'meal', title: '🥜 Your snack', note: 'Roasted groundnuts, banana, or buttermilk. Don\'t skip — keeps energy steady through the evening.' },
+  { time: '3:30 PM', type: 'work', title: '💻 Work wrap-up block', note: 'Post-3pm nap window for puppy. Finish meetings, close tasks, do deep work.' },
+  { time: '5:00 PM', type: 'work', title: '💻 Wind-down work', note: 'Wrap up messages, handoffs. Puppy may want attention now — let him sit near you.' },
+  { time: '6:30 PM', type: 'puppy', title: '🐶 Potty + active play', note: 'He\'s been awake a while — active floor play 15 min. Tug toy, ball roll. Burns his energy before dinner.' },
+  { time: '7:00 PM', type: 'meal', title: '🍳 Cook & eat dinner', note: 'On non-badminton nights: 20–30 min cook time. Husband watches puppy. Dosa, upma, or egg bhurji.' },
+  { time: '7:30 PM', type: 'workout', title: '🏸 BADMINTON NIGHTS (optional)', note: 'When you and husband play 7:30–8:30 PM — this replaces your evening and counts as your Sat endurance session. Husband must ensure puppy is settled before you leave; someone needs to be home.' },
+  { time: '8:30 PM', type: 'puppy', title: '🐶 Post-badminton: potty check', note: 'First thing when you\'re back — check the pad, settle him down. He may have been anxious.' },
+  { time: '9:00 PM', type: 'puppy', title: '🐶 Puppy Meal 3 + final wind-down', note: 'Last feed of the day at 9 PM sharp. Consistency here is key — it regulates his sleep. Keep lights dim, energy calm.' },
+  { time: '9:20 PM', type: 'puppy', title: '🐶 Post-dinner potty (15–20 min after meal)', note: 'He\'ll need to go within 20 min of eating. Stay with him, then settle him for the night.' },
+  { time: '9:45 PM', type: 'rest', title: '🌙 Your wind-down', note: 'Recovery yoga / stretching on Thu. Otherwise: phone off, dim lights. Don\'t scroll — sleep quality matters as much as the workout.' },
+  { time: '10:30 PM', type: 'puppy', title: '🐶 Final potty before sleep', note: 'Last potty of the night. After this at 50 days he should sleep 4–5 hrs straight.' },
+  { time: '10:45 PM', type: 'rest', title: '😴 Sleep', note: 'Non-negotiable 7 hrs. Strength gains happen during sleep, not during the workout.' },
+];
+
+const WEEKEND_NOTES = [
+  { icon: '🏸', title: 'Badminton nights — workout swap', note: 'When you play badminton 7:30–8:30 PM, it fully replaces your Saturday endurance session. Don\'t double up. One of you must be home for the 9 PM puppy feed — decide in advance who stays back or leaves early.' },
+  { icon: '🏋️', title: 'Saturday workout', note: 'If no badminton this week: do the full 40 min endurance session in the morning. Your husband handles the 9 AM puppy feed so you have the window. Plan this the night before.' },
+  { icon: '🍳', title: 'Sunday meal prep', note: '45 min while puppy naps post-9 AM feed. Sambar, eggs, batter, chopped veggies — powers your entire week.' },
+  { icon: '🐶', title: 'Puppy feed schedule — fixed times', note: 'Meal 1: 9 AM | Meal 2: 3 PM | Meal 3: 9 PM. Fixed times help regulate digestion and sleep. Potty always follows within 15–20 min of eating.' },
+  { icon: '💡', title: 'The potty = movement break rule', note: 'Every potty break = 15 squats or a 2-min stretch. 5–6 breaks/day × 15 reps = 75–90 extra reps daily without any extra time.' },
+  { icon: '👫', title: 'Husband\'s role on badminton nights', note: 'He plays with you — great. But one of you needs to be back by 9 PM for puppy\'s last meal. Split duties: one cooks/feeds, one settles the puppy. Works cleanly if planned.' },
+];
+
+function buildPuppy() {
+  const html = `
+    <div class="puppy-tip-box">
+      <h4>At 50 days, your puppy\'s rhythm is your schedule</h4>
+      <ul>
+        <li>Awake → potty within 5 min — always</li>
+        <li>After every meal → potty within 15–20 min</li>
+        <li>Naps 1–2 hrs after eating — that\'s your workout/work window</li>
+        <li>Sleep improves your gains as much as the workout itself</li>
+      </ul>
+    </div>
+
+    <div class="section-label" style="margin-top:0;">Weekday Timeline</div>
+    <div class="timeline" style="margin-bottom:32px;">
+      ${WEEKDAY_SCHEDULE.map(item => `
+        <div class="tl-item ${item.type}">
+          <div class="tl-card ${item.type}">
+            <div class="tl-time">${item.time}</div>
+            <div class="tl-title">${item.title}</div>
+            <div class="tl-note">${item.note}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div class="section-label">Weekend & General Tips</div>
+    <div class="info-grid">
+      ${WEEKEND_NOTES.map(n => `
+        <div class="ig-card">
+          <h4>${n.icon} ${n.title}</h4>
+          <p style="font-size:0.82rem;color:#374151;line-height:1.5;">${n.note}</p>
+        </div>`).join('')}
+    </div>
+  `;
+  document.getElementById('puppyContent').innerHTML = html;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+// Auto-set week based on current date approximation (optional: always start at 1)
+activeWeek = 1;
+
+// Set today's meal day
+const todayIdx = MEALS.findIndex(m => m.day === getTodayDayName());
+activeMealDay = todayIdx >= 0 ? todayIdx : 0;
+
+buildToday();
+buildWeekTabs();
+buildWeekContent();
+buildMeals();
+buildRecipes();
+buildPuppy();
+buildProgress();
+updateSidebar();
+</script>
+</body>
+</html>
