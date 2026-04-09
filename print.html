@@ -197,6 +197,29 @@
       font-size: 0.78rem; flex: 1; text-align: center;
     }
     .cal-summary-print strong { color: var(--orange); }
+
+    /* ── MEASUREMENTS & WELLNESS PRINT ── */
+    .measure-table-print { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .measure-table-print th {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      padding: 8px; text-align: center; background: #f9fafb;
+      border: 1px solid #e5e7eb; color: var(--text-soft);
+    }
+    .measure-table-print td {
+      border: 1px solid #e5e7eb; padding: 12px 8px; text-align: center;
+      font-size: 0.78rem; height: 36px;
+    }
+    .wellness-table-print { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .wellness-table-print th {
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      padding: 6px 4px; text-align: center; background: #f9fafb;
+      border: 1px solid #e5e7eb; color: var(--text-soft);
+    }
+    .wellness-table-print td {
+      border: 1px solid #e5e7eb; padding: 8px 4px; text-align: center;
+      font-size: 0.75rem; width: 14.28%;
+    }
+    .wellness-table-print td .well-check { width: 14px; height: 14px; border: 1.5px solid #d1d5db; border-radius: 3px; display: inline-block; }
   </style>
 </head>
 <body>
@@ -212,6 +235,7 @@
     <option value="4">Week 4 only</option>
     <option value="meals">Meal Plan only</option>
     <option value="calendar">Weight Calendar</option>
+    <option value="wellness">Wellness & Measurements</option>
   </select>
   <button class="btn btn-print" onclick="window.print()">Print / Save PDF</button>
   <a href="index.html" class="btn btn-back" style="text-decoration:none;">Back to App</a>
@@ -497,6 +521,101 @@ function buildCalendarPage(monthOffset) {
   </div>`;
 }
 
+function buildMeasurePage() {
+  const PARTS = ['Waist', 'Hips', 'Bust', 'Thigh (L)', 'Thigh (R)', 'Upper Arm (L)', 'Upper Arm (R)'];
+  let rows = PARTS.map(p =>
+    `<tr><td style="font-weight:600;text-align:left;">${p}</td><td></td><td></td><td></td><td></td><td></td></tr>`
+  ).join('');
+
+  return `<div class="print-page">
+    <div class="day-header" style="border-color: var(--purple);">
+      <div class="day-badge" style="background: var(--purple);">📏</div>
+      <div>
+        <h2>Body Measurements Tracker</h2>
+        <div class="subtitle">Measure weekly · Same day, morning, before eating · Use a soft tape measure</div>
+      </div>
+    </div>
+    <table class="measure-table-print">
+      <thead><tr><th>Body Part</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>Change</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:20px;">
+      <div class="section-divider" style="border-color: var(--purple);">How to Measure</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;font-size:0.78rem;">
+        <div><strong>Waist:</strong> At the narrowest point, usually 1 inch above the belly button. Relax — don't suck in.</div>
+        <div><strong>Hips:</strong> At the widest point around your hips and buttocks.</div>
+        <div><strong>Bust:</strong> Around the fullest part of the chest, tape level across the back.</div>
+        <div><strong>Thigh:</strong> At the widest part, usually right below the crease where leg meets hip.</div>
+        <div><strong>Upper Arm:</strong> Midway between shoulder and elbow, arm relaxed at your side.</div>
+        <div><strong>Tip:</strong> The scale fluctuates daily (water, food, hormones). Inches and how clothes fit tell the real story!</div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span>FitPlan — Body Measurements</span>
+      <span>Measure every Sunday morning</span>
+    </div>
+  </div>`;
+}
+
+function buildWellnessPage() {
+  const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const HABITS = [
+    { icon: '😴', text: 'Sleep 7-9 hrs' },
+    { icon: '💧', text: 'Drink 3L water' },
+    { icon: '🚶', text: '10-min walk after meal' },
+    { icon: '🧘', text: '5-min breathing' },
+    { icon: '📵', text: 'No screen before bed' },
+    { icon: '💊', text: 'Supplements taken' },
+    { icon: '🪑', text: 'Posture checks' },
+    { icon: '🥗', text: 'Hit calorie target' },
+  ];
+  const headerRow = '<tr><th>Habit</th>' + DAYS.map(d => '<th>' + d + '</th>').join('') + '</tr>';
+  const bodyRows = HABITS.map(h =>
+    '<tr><td style="text-align:left;font-weight:600;">' + h.icon + ' ' + h.text + '</td>' +
+    DAYS.map(() => '<td><span class="well-check"></span></td>').join('') + '</tr>'
+  ).join('');
+
+  return `<div class="print-page">
+    <div class="day-header" style="border-color: var(--green);">
+      <div class="day-badge" style="background: var(--green);">✅</div>
+      <div>
+        <h2>Weekly Wellness Tracker</h2>
+        <div class="subtitle">Check off each habit daily · Consistency > Perfection</div>
+      </div>
+    </div>
+
+    <div class="section-divider" style="border-color: var(--green);">Week ___  Habits</div>
+    <table class="wellness-table-print">
+      <thead>${headerRow}</thead>
+      <tbody>${bodyRows}</tbody>
+    </table>
+
+    <div class="section-divider" style="border-color: var(--green); margin-top: 20px;">Daily Sleep & Water Log</div>
+    <table class="measure-table-print">
+      <thead><tr><th></th>${DAYS.map(d => '<th>' + d + '</th>').join('')}</tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600;text-align:left;">😴 Sleep (hrs)</td>${DAYS.map(() => '<td></td>').join('')}</tr>
+        <tr><td style="font-weight:600;text-align:left;">💧 Water (L)</td>${DAYS.map(() => '<td></td>').join('')}</tr>
+        <tr><td style="font-weight:600;text-align:left;">👟 Steps</td>${DAYS.map(() => '<td></td>').join('')}</tr>
+        <tr><td style="font-weight:600;text-align:left;">⚖️ Weight (kg)</td>${DAYS.map(() => '<td></td>').join('')}</tr>
+      </tbody>
+    </table>
+
+    <div class="section-divider" style="border-color: var(--orange); margin-top: 20px;">Supplement Guide</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;font-size:0.78rem;">
+      <div><strong>💊 Vitamin D3 (1000 IU):</strong> After breakfast with fat. Essential for bone health and mood.</div>
+      <div><strong>💊 B12:</strong> Morning, especially on vegetarian days. Supports energy and nervous system.</div>
+      <div><strong>💊 Iron:</strong> With Vitamin C (lemon water) for absorption. NOT with tea/coffee/calcium.</div>
+      <div><strong>💊 Calcium:</strong> With dinner. Take separately from iron (4+ hrs apart).</div>
+    </div>
+
+    <div class="page-footer">
+      <span>FitPlan — Weekly Wellness</span>
+      <span>Print one per week · Pin at your desk</span>
+    </div>
+  </div>`;
+}
+
 function render() {
   const view = document.getElementById('viewSelect').value;
   let html = '';
@@ -505,12 +624,16 @@ function render() {
     html = buildMealPage();
   } else if (view === 'calendar') {
     html = buildCalendarPage(0);
+  } else if (view === 'wellness') {
+    html = buildMeasurePage() + buildWellnessPage();
   } else if (view === 'all') {
     for (let w = 1; w <= 4; w++) {
       SCHEDULE.forEach(s => { html += buildDayPage(s, w); });
     }
     html += buildMealPage();
     html += buildCalendarPage(0);
+    html += buildMeasurePage();
+    html += buildWellnessPage();
   } else {
     const w = parseInt(view);
     SCHEDULE.forEach(s => { html += buildDayPage(s, w); });

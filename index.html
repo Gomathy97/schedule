@@ -581,6 +581,123 @@
     .streak-text h3 { font-size: 1rem; font-weight: 700; }
     .streak-text p { font-size: 0.8rem; opacity: 0.85; margin-top: 3px; }
 
+    /* ── WATER TRACKER ── */
+    .water-tracker {
+      background: var(--white); border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius); padding: 16px 18px; margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .water-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .water-header h4 { font-size: 0.85rem; font-weight: 700; }
+    .water-header span { font-size: 0.78rem; color: var(--text-soft); }
+    .water-glasses { display: flex; gap: 6px; flex-wrap: wrap; }
+    .water-glass {
+      width: 36px; height: 44px; border-radius: 6px;
+      border: 2px solid var(--border); background: var(--white);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; transition: all 0.2s var(--transition-bounce);
+    }
+    .water-glass.filled { background: #dbeafe; border-color: var(--blue); }
+    .water-glass:hover { transform: scale(1.1); border-color: var(--blue); }
+    .water-bar-track {
+      height: 8px; background: var(--grey-light); border-radius: 20px;
+      overflow: hidden; margin-top: 10px;
+    }
+    .water-bar-fill {
+      height: 100%; border-radius: 20px; transition: width 0.4s var(--transition-smooth);
+      background: linear-gradient(90deg, #93c5fd, var(--blue));
+    }
+
+    /* ── WELLNESS CHECKLIST ── */
+    .wellness-card {
+      background: var(--white); border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius); padding: 16px 18px; margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .wellness-card h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .wellness-items { display: flex; flex-direction: column; gap: 6px; }
+    .wellness-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: 8px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .wellness-item:hover { background: #f9fafb; }
+    .wellness-item .wi-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s var(--transition-bounce);
+      font-size: 0.7rem; color: transparent;
+    }
+    .wellness-item.done .wi-check {
+      background: var(--green); border-color: var(--green); color: white;
+      animation: checkPop 0.3s var(--transition-bounce);
+    }
+    .wellness-item.done .wi-text { color: var(--text-soft); text-decoration: line-through; }
+    .wi-icon { font-size: 1rem; flex-shrink: 0; }
+    .wi-text { font-size: 0.82rem; }
+    .wellness-progress { font-size: 0.72rem; color: var(--text-soft); margin-top: 8px; text-align: right; }
+
+    /* ── TIPS CARD ── */
+    .tips-section {
+      background: var(--white); border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius); padding: 16px 18px; margin-top: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .tips-section h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .tip-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: 0.8rem; line-height: 1.5; }
+    .tip-row .tip-icon { flex-shrink: 0; }
+
+    /* ── MEASUREMENTS ── */
+    .measure-card {
+      background: var(--white); border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius); padding: 18px; margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .measure-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px; margin-bottom: 14px;
+    }
+    .measure-item {
+      text-align: center; padding: 12px 8px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      transition: all 0.2s;
+    }
+    .measure-item:hover { border-color: var(--orange); }
+    .measure-icon { font-size: 1.2rem; }
+    .measure-label { font-size: 0.7rem; color: var(--text-soft); margin: 4px 0; }
+    .measure-val {
+      font-size: 1.1rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--orange), #e8834f);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .measure-diff { font-size: 0.68rem; font-weight: 600; margin-top: 2px; }
+    .measure-diff.down { color: var(--green); }
+    .measure-diff.up { color: #dc2626; }
+    .measure-btn {
+      padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--orange);
+      background: var(--orange-light); color: var(--orange); font-size: 0.82rem;
+      font-weight: 600; cursor: pointer; transition: all 0.15s;
+    }
+    .measure-btn:hover { background: var(--orange); color: white; }
+    .measure-input-row {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px; margin-bottom: 14px;
+    }
+    .measure-input-group { text-align: center; }
+    .measure-input-group label { display: block; font-size: 0.72rem; color: var(--text-soft); margin-bottom: 4px; }
+    .measure-input-group input {
+      width: 100%; padding: 8px; border: 2px solid var(--border);
+      border-radius: 8px; text-align: center; font-size: 0.9rem; font-weight: 600; outline: none;
+    }
+    .measure-input-group input:focus { border-color: var(--orange); }
+    .measure-history { margin-top: 14px; }
+    .measure-history-row {
+      display: flex; justify-content: space-between; padding: 6px 0;
+      font-size: 0.78rem; border-bottom: 1px solid #f3f4f6;
+    }
+    .measure-history-row:last-child { border-bottom: none; }
+
     /* ── WEIGHT CALENDAR PAGE ── */
     .cal-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
     .cal-nav-btn {
@@ -1103,8 +1220,11 @@
       </div>
       <div id="today-banner-area"></div>
       <div id="today-targets-area"></div>
+      <div id="today-water-area"></div>
+      <div id="today-wellness-area"></div>
       <div id="today-workout-area"></div>
       <div id="today-meal-area"></div>
+      <div id="today-tips-area"></div>
     </div>
 
     <!-- WORKOUTS PAGE -->
@@ -1162,6 +1282,8 @@
       <div class="stat-row" id="statRow"></div>
       <div class="section-label">Weekly Breakdown</div>
       <div class="wk-bars" id="wkBars"></div>
+      <div class="section-label">Body Measurements</div>
+      <div id="measureArea"></div>
       <button class="reset-btn" onclick="resetAll()">Reset Month</button>
     </div>
 
@@ -1500,6 +1622,12 @@ function buildToday() {
       <div class="target-card"><div class="target-icon">👟</div><div class="target-info"><div class="target-val">8000+</div><div class="target-lbl">Steps</div></div></div>
     </div>`;
 
+  // Water tracker
+  buildWaterTracker();
+
+  // Wellness checklist
+  buildWellnessChecklist();
+
   const exList = renderExerciseList(activeWeek, sched, true);
   document.getElementById('today-workout-area').innerHTML = `
     <div class="today-section-label">Today's Workout</div>
@@ -1515,6 +1643,217 @@ function buildToday() {
       <div class="meal-slot-card meal-dinner"><div class="msc-emoji">${meal.dinner.emoji}</div><div class="msc-label">Dinner</div><div class="msc-value">${meal.dinner.text}</div><div class="msc-cal">${meal.dinner.cal}</div></div>
       <div class="meal-slot-card meal-snack"><div class="msc-emoji">${meal.snack.emoji}</div><div class="msc-label">Snack</div><div class="msc-value">${meal.snack.text}</div><div class="msc-cal">${meal.snack.cal}</div></div>
     </div>`;
+
+  // Tips
+  buildTodayTips();
+}
+
+// ── WATER TRACKER ────────────────────────────────────────────────────────────
+
+function getWaterKey() {
+  const d = new Date();
+  return `water_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function getWaterCount() {
+  const s = getState();
+  return s[getWaterKey()] || 0;
+}
+
+function toggleWaterGlass(n) {
+  const s = getState();
+  const key = getWaterKey();
+  const current = s[key] || 0;
+  s[key] = current === n ? n - 1 : n; // tap same glass to unfill
+  saveState(s);
+  buildWaterTracker();
+}
+
+function buildWaterTracker() {
+  const count = getWaterCount();
+  const total = 12; // 12 glasses = ~3L (250ml each)
+  const litres = (count * 0.25).toFixed(1);
+  const pct = Math.min(100, Math.round(count / total * 100));
+  let glasses = '';
+  for (let i = 1; i <= total; i++) {
+    glasses += `<div class="water-glass ${i <= count ? 'filled' : ''}" onclick="toggleWaterGlass(${i})">${i <= count ? '💧' : ''}</div>`;
+  }
+  document.getElementById('today-water-area').innerHTML = `
+    <div class="water-tracker">
+      <div class="water-header">
+        <h4>💧 Water Intake</h4>
+        <span>${litres}L / 3.0L</span>
+      </div>
+      <div class="water-glasses">${glasses}</div>
+      <div class="water-bar-track"><div class="water-bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+}
+
+// ── WELLNESS CHECKLIST ───────────────────────────────────────────────────────
+
+const WELLNESS_ITEMS = [
+  { id: 'sleep', icon: '😴', text: 'Slept 7–9 hours' },
+  { id: 'walk', icon: '🚶', text: '10-min walk after a meal' },
+  { id: 'breathe', icon: '🧘', text: '5-min breathing / meditation' },
+  { id: 'screen', icon: '📵', text: 'No screen 30 min before bed' },
+  { id: 'posture', icon: '🪑', text: 'Posture check (stand/stretch every hour)' },
+  { id: 'supplements', icon: '💊', text: 'Vitamins taken (D3, B12, Iron, Calcium)' },
+];
+
+function getWellnessKey(id) {
+  const d = new Date();
+  return `well_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_${id}`;
+}
+
+function toggleWellness(id) {
+  const s = getState();
+  const key = getWellnessKey(id);
+  s[key] = !s[key];
+  saveState(s);
+  buildWellnessChecklist();
+}
+
+function buildWellnessChecklist() {
+  const s = getState();
+  const doneCount = WELLNESS_ITEMS.filter(w => s[getWellnessKey(w.id)]).length;
+  const items = WELLNESS_ITEMS.map(w => {
+    const done = !!s[getWellnessKey(w.id)];
+    return `<div class="wellness-item ${done ? 'done' : ''}" onclick="toggleWellness('${w.id}')">
+      <div class="wi-check">${done ? '✓' : ''}</div>
+      <div class="wi-icon">${w.icon}</div>
+      <div class="wi-text">${w.text}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('today-wellness-area').innerHTML = `
+    <div class="wellness-card">
+      <h4>Daily Wellness</h4>
+      <div class="wellness-items">${items}</div>
+      <div class="wellness-progress">${doneCount}/${WELLNESS_ITEMS.length} complete</div>
+    </div>`;
+}
+
+// ── TODAY TIPS ────────────────────────────────────────────────────────────────
+
+function buildTodayTips() {
+  const week = activeWeek;
+  const cycleTips = [
+    { week: 1, text: 'Week 1 (Menstrual): Listen to your body. Lower intensity is OK. Focus on iron-rich foods (dates, spinach, jaggery). Stay warm, rest more.' },
+    { week: 2, text: 'Week 2 (Follicular): Energy is rising — push harder! Best week for PRs and heavy strength work. Estrogen supports muscle recovery.' },
+    { week: 3, text: 'Week 3 (Ovulation): Peak strength & endurance. Great time for HIIT and challenging poses. Stay hydrated — you retain less water.' },
+    { week: 4, text: 'Week 4 (Luteal): Energy may dip. Prioritize yoga, flexibility, and steady-state cardio. Cravings are normal — choose protein-rich snacks.' },
+  ];
+  const cycleInfo = cycleTips.find(c => c.week === week) || cycleTips[0];
+
+  document.getElementById('today-tips-area').innerHTML = `
+    <div class="tips-section">
+      <h4>Wellness Tips</h4>
+      <div class="tip-row"><div class="tip-icon">🩸</div><div>${cycleInfo.text}</div></div>
+      <div class="tip-row"><div class="tip-icon">💊</div><div><strong>Daily supplements:</strong> Vitamin D3 (1000 IU after breakfast), B12 (if vegetarian days), Iron (with Vitamin C for absorption), Calcium (with dinner — not with iron).</div></div>
+      <div class="tip-row"><div class="tip-icon">📏</div><div><strong>Inch loss tip:</strong> Measure waist, hips & thighs weekly (same day, morning). The scale fluctuates — inches tell the real story.</div></div>
+      <div class="tip-row"><div class="tip-icon">🌙</div><div><strong>Recovery:</strong> Aim for 7–9 hours sleep. Growth hormone peaks during deep sleep — that's when your body actually burns fat and builds lean muscle.</div></div>
+    </div>`;
+}
+
+// ── MEASUREMENTS TRACKER ─────────────────────────────────────────────────────
+
+const MEASURE_PARTS = [
+  { id: 'waist', label: 'Waist', icon: '📏' },
+  { id: 'hips', label: 'Hips', icon: '🍑' },
+  { id: 'bust', label: 'Bust', icon: '👚' },
+  { id: 'thigh', label: 'Thigh', icon: '🦵' },
+  { id: 'arm', label: 'Upper Arm', icon: '💪' },
+];
+
+function getMeasureKey(week) { return `measure_w${week}`; }
+
+function getMeasurements(week) {
+  const s = getState();
+  return s[getMeasureKey(week)] || null;
+}
+
+function saveMeasurements(week, data) {
+  const s = getState();
+  s[getMeasureKey(week)] = data;
+  saveState(s);
+}
+
+let measureEditing = false;
+
+function toggleMeasureEdit() {
+  measureEditing = !measureEditing;
+  buildMeasurements();
+}
+
+function submitMeasurements() {
+  const data = {};
+  MEASURE_PARTS.forEach(p => {
+    const inp = document.getElementById('measure-inp-' + p.id);
+    if (inp && inp.value.trim()) data[p.id] = parseFloat(inp.value);
+  });
+  if (Object.keys(data).length > 0) {
+    saveMeasurements(activeWeek, data);
+  }
+  measureEditing = false;
+  buildMeasurements();
+}
+
+function buildMeasurements() {
+  const allWeeks = [1,2,3,4].map(w => ({ week: w, data: getMeasurements(w) })).filter(w => w.data);
+
+  let html = '<div class="measure-card">';
+
+  if (allWeeks.length > 0) {
+    const latest = allWeeks[allWeeks.length - 1];
+    const first = allWeeks[0];
+    html += '<div class="measure-grid">';
+    MEASURE_PARTS.forEach(p => {
+      const val = latest.data[p.id];
+      let diffHtml = '';
+      if (allWeeks.length > 1 && first.data[p.id] && val) {
+        const diff = (val - first.data[p.id]).toFixed(1);
+        const cls = diff < 0 ? 'down' : diff > 0 ? 'up' : '';
+        const sign = diff > 0 ? '+' : '';
+        diffHtml = `<div class="measure-diff ${cls}">${sign}${diff} cm</div>`;
+      }
+      html += `<div class="measure-item">
+        <div class="measure-icon">${p.icon}</div>
+        <div class="measure-label">${p.label}</div>
+        <div class="measure-val">${val ? val + ' cm' : '--'}</div>
+        ${diffHtml}
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  if (measureEditing) {
+    html += `<div style="font-size:0.8rem;color:var(--text-soft);margin-bottom:8px;">Week ${activeWeek} measurements (in cm):</div>`;
+    html += '<div class="measure-input-row">';
+    const existing = getMeasurements(activeWeek) || {};
+    MEASURE_PARTS.forEach(p => {
+      html += `<div class="measure-input-group">
+        <label>${p.icon} ${p.label}</label>
+        <input type="number" id="measure-inp-${p.id}" value="${existing[p.id] || ''}" placeholder="cm" step="0.1">
+      </div>`;
+    });
+    html += '</div>';
+    html += '<div style="display:flex;gap:8px;"><button class="measure-btn" onclick="submitMeasurements()">Save Week ' + activeWeek + '</button><button class="measure-btn" onclick="measureEditing=false;buildMeasurements()" style="background:var(--white);color:var(--text-soft);border-color:var(--border);">Cancel</button></div>';
+  } else {
+    html += `<button class="measure-btn" onclick="toggleMeasureEdit()">Log Week ${activeWeek} Measurements</button>`;
+  }
+
+  // History
+  if (allWeeks.length > 0) {
+    html += '<div class="measure-history" style="margin-top:14px;">';
+    html += '<div style="font-size:0.75rem;font-weight:700;color:var(--text-soft);text-transform:uppercase;margin-bottom:6px;">History</div>';
+    allWeeks.forEach(w => {
+      const parts = MEASURE_PARTS.map(p => w.data[p.id] ? `${p.label}: ${w.data[p.id]}` : '').filter(Boolean).join(' · ');
+      html += `<div class="measure-history-row"><span style="font-weight:600;">Week ${w.week}</span><span style="color:var(--text-soft);">${parts} cm</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  html += '</div>';
+  document.getElementById('measureArea').innerHTML = html;
 }
 
 // ── CUSTOMIZE ORDER ──────────────────────────────────────────────────────────
@@ -1718,6 +2057,8 @@ function buildProgress() {
       <div class="wk-bar-pct">${p}%</div>
     </div>`;
   }).join('');
+
+  buildMeasurements();
 }
 
 function animateCounters() {
@@ -2133,6 +2474,23 @@ function getAllWeights() {
   return weights;
 }
 
+function getSleepKey(y, m, d) { return `sleep_${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+
+function getSleep(y, m, d) {
+  const s = getState();
+  return s[getSleepKey(y, m, d)] || null;
+}
+
+function saveSleep(y, m, d, val) {
+  const s = getState();
+  if (val === null || val === '') {
+    delete s[getSleepKey(y, m, d)];
+  } else {
+    s[getSleepKey(y, m, d)] = parseFloat(val);
+  }
+  saveState(s);
+}
+
 function changeCalMonth(delta) {
   calMonth += delta;
   if (calMonth > 11) { calMonth = 0; calYear++; }
@@ -2141,7 +2499,8 @@ function changeCalMonth(delta) {
 }
 
 function openWeightInput(y, m, d) {
-  const existing = getWeight(y, m, d);
+  const existingW = getWeight(y, m, d);
+  const existingS = getSleep(y, m, d);
   const dateStr = new Date(y, m, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
   const overlay = document.createElement('div');
   overlay.className = 'cal-input-overlay';
@@ -2149,40 +2508,55 @@ function openWeightInput(y, m, d) {
   const card = document.createElement('div');
   card.className = 'cal-input-card';
   card.innerHTML = `
-    <h3>Log Weight</h3>
+    <h3>Daily Log</h3>
     <p>${dateStr}</p>
-    <input type="number" class="cal-input-field" id="weightInput" value="${existing || ''}" placeholder="00.0" step="0.1" min="20" max="300">
-    <span style="font-size:0.8rem;color:var(--text-soft);margin-left:4px;">kg</span>
+    <div style="display:flex;gap:16px;justify-content:center;align-items:flex-end;margin-bottom:4px;">
+      <div style="text-align:center;">
+        <div style="font-size:0.7rem;color:var(--text-soft);margin-bottom:4px;">Weight</div>
+        <input type="number" class="cal-input-field" id="weightInput" value="${existingW || ''}" placeholder="00.0" step="0.1" min="20" max="300">
+        <span style="font-size:0.75rem;color:var(--text-soft);">kg</span>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:0.7rem;color:var(--text-soft);margin-bottom:4px;">Sleep</div>
+        <input type="number" class="cal-input-field" id="sleepInput" value="${existingS || ''}" placeholder="0.0" step="0.5" min="0" max="16">
+        <span style="font-size:0.75rem;color:var(--text-soft);">hrs</span>
+      </div>
+    </div>
     <div class="cal-input-btns">
-      ${existing ? '<button class="cal-btn-clear" id="calClearBtn">Clear</button>' : ''}
+      ${(existingW || existingS) ? '<button class="cal-btn-clear" id="calClearBtn">Clear</button>' : ''}
       <button class="cal-btn-cancel" id="calCancelBtn">Cancel</button>
       <button class="cal-btn-save" id="calSaveBtn">Save</button>
     </div>`;
   overlay.appendChild(card);
   document.body.appendChild(overlay);
-  const inp = document.getElementById('weightInput');
-  inp.focus();
-  document.getElementById('calSaveBtn').onclick = () => submitWeight(y, m, d);
+  document.getElementById('weightInput').focus();
+  document.getElementById('calSaveBtn').onclick = () => submitDailyLog(y, m, d);
   document.getElementById('calCancelBtn').onclick = () => overlay.remove();
-  if (existing) document.getElementById('calClearBtn').onclick = () => clearWeight(y, m, d);
-  inp.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') submitWeight(y, m, d);
+  if (existingW || existingS) document.getElementById('calClearBtn').onclick = () => clearDailyLog(y, m, d);
+  document.getElementById('weightInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('sleepInput').focus();
+    if (e.key === 'Escape') overlay.remove();
+  });
+  document.getElementById('sleepInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitDailyLog(y, m, d);
     if (e.key === 'Escape') overlay.remove();
   });
 }
 
-function submitWeight(y, m, d) {
-  const inp = document.getElementById('weightInput');
-  const val = inp ? inp.value.trim() : '';
-  if (val && !isNaN(parseFloat(val))) {
-    saveWeight(y, m, d, val);
-  }
+function submitDailyLog(y, m, d) {
+  const wInp = document.getElementById('weightInput');
+  const sInp = document.getElementById('sleepInput');
+  const wVal = wInp ? wInp.value.trim() : '';
+  const sVal = sInp ? sInp.value.trim() : '';
+  if (wVal && !isNaN(parseFloat(wVal))) saveWeight(y, m, d, wVal);
+  if (sVal && !isNaN(parseFloat(sVal))) saveSleep(y, m, d, sVal);
   document.querySelector('.cal-input-overlay')?.remove();
   buildCalendar();
 }
 
-function clearWeight(y, m, d) {
+function clearDailyLog(y, m, d) {
   saveWeight(y, m, d, null);
+  saveSleep(y, m, d, null);
   document.querySelector('.cal-input-overlay')?.remove();
   buildCalendar();
 }
@@ -2209,6 +2583,10 @@ function buildCalendar() {
     const monthVals = thisMonthW.map(w => w.val);
     const monthMin = monthVals.length ? Math.min(...monthVals).toFixed(1) : '--';
     const monthMax = monthVals.length ? Math.max(...monthVals).toFixed(1) : '--';
+    // Avg sleep this month
+    const s = getState();
+    const sleepKeys = Object.keys(s).filter(k => k.startsWith(`sleep_${calYear}-${String(calMonth+1).padStart(2,'0')}`));
+    const avgSleep = sleepKeys.length ? (sleepKeys.reduce((sum, k) => sum + s[k], 0) / sleepKeys.length).toFixed(1) : '--';
     summaryHTML = `<div class="cal-summary">
       <div class="cal-summary-card">
         <div class="cal-summary-num">${latest.val}</div>
@@ -2219,8 +2597,8 @@ function buildCalendar() {
         <div class="cal-summary-lbl">Days Logged</div>
       </div>
       <div class="cal-summary-card">
-        <div class="cal-summary-num">${monthMin}–${monthMax}</div>
-        <div class="cal-summary-lbl">This Month Range</div>
+        <div class="cal-summary-num">${avgSleep}h</div>
+        <div class="cal-summary-lbl">Avg Sleep</div>
       </div>
       <div class="cal-summary-card">
         <div class="cal-summary-num">${diffSign}${diff}</div>
@@ -2250,14 +2628,16 @@ function buildCalendar() {
   for (let d = 1; d <= daysInMonth; d++) {
     const isToday = calYear === todayY && calMonth === todayM && d === todayD;
     const w = getWeight(calYear, calMonth, d);
-    const hasWeight = w !== null;
+    const sl = getSleep(calYear, calMonth, d);
+    const hasData = w !== null || sl !== null;
     const classes = ['cal-cell'];
     if (isToday) classes.push('today');
-    if (hasWeight) classes.push('has-weight');
+    if (w !== null) classes.push('has-weight');
     html += `<div class="${classes.join(' ')}" onclick="openWeightInput(${calYear},${calMonth},${d})">
       <div class="cal-date">${d}</div>
-      <div class="cal-weight-val">${hasWeight ? w.toFixed(1) : ''}</div>
-      ${hasWeight ? '<div class="cal-weight-unit">kg</div>' : ''}
+      <div class="cal-weight-val">${w !== null ? w.toFixed(1) : ''}</div>
+      ${w !== null ? '<div class="cal-weight-unit">kg</div>' : ''}
+      ${sl !== null ? '<div style="font-size:0.6rem;color:var(--purple);">😴 ' + sl + 'h</div>' : ''}
     </div>`;
   }
 
