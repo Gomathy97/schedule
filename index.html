@@ -173,6 +173,24 @@
       background: var(--orange);
     }
 
+    .daily-targets {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 10px; margin-bottom: 24px;
+    }
+    .target-card {
+      background: var(--white); border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius); padding: 14px;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: var(--shadow-sm); transition: all 0.25s var(--transition-smooth);
+    }
+    .target-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .target-icon { font-size: 1.5rem; }
+    .target-val { font-size: 1rem; font-weight: 800; color: var(--text); }
+    .target-lbl { font-size: 0.68rem; color: var(--text-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+    @media (max-width: 640px) {
+      .daily-targets { grid-template-columns: repeat(2, 1fr); }
+    }
+
     /* ── TODAY BANNER ── */
     .today-banner {
       background: linear-gradient(135deg, var(--orange) 0%, #e8834f 50%, #f4a07a 100%);
@@ -339,15 +357,34 @@
     }
 
     .exercise-list { margin-top: 12px; }
-    .ex-item {
-      display: flex;
-      flex-direction: column;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
+
+    /* table-based exercise layout */
+    .ex-table-wrap { overflow-x: auto; }
+    .ex-table-app { width: 100%; border-collapse: collapse; }
+    .ex-table-app thead th {
+      text-align: left; font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-soft); padding: 6px 8px;
+      border-bottom: 2px solid var(--border);
     }
-    .ex-item:hover { background: rgba(217,95,43,0.02); border-radius: 8px; }
-    .ex-item:last-child { border-bottom: none; }
+    .ex-tr { cursor: pointer; transition: background 0.15s; }
+    .ex-tr:hover { background: rgba(0,0,0,0.02); }
+    .ex-tr td { padding: 8px; border-bottom: 1px solid #f3f4f6; vertical-align: top; }
+    .ex-tr:last-child td { border-bottom: none; }
+    .ex-td-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .ex-td-detail { font-size: 0.74rem; color: var(--text-soft); }
+    .ex-td-sets { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; }
+    .ex-th-check, .ex-td-check { width: 32px; text-align: center; }
+
+    .ex-tr.warmup td { background: #fff7ed; }
+    .ex-tr.cooldown td { background: #eff6ff; }
+    .ex-tr.flex td { background: #fdf4ff; }
+    .ex-tr.hiit td { background: #fef2f2; }
+
+    .ex-tr.done .ex-td-name,
+    .ex-tr.done .ex-td-detail,
+    .ex-tr.done .ex-td-sets { text-decoration: line-through; color: #9ca3af; }
+
     .ex-row { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; flex: 1; padding: 4px 0; }
     .ex-checkbox {
       width: 22px; height: 22px; border-radius: 50%;
@@ -374,17 +411,20 @@
     .ex-detail { font-size: 0.76rem; color: #9ca3af; }
     .ex-item.done .ex-text { text-decoration: line-through; color: #9ca3af; }
 
-    /* staggered exercise items on expand */
-    .day-row.expanded .ex-item { animation: fadeInUp 0.3s var(--transition-smooth) both; }
-    .day-row.expanded .ex-item:nth-child(1) { animation-delay: 0.03s; }
-    .day-row.expanded .ex-item:nth-child(2) { animation-delay: 0.06s; }
-    .day-row.expanded .ex-item:nth-child(3) { animation-delay: 0.09s; }
-    .day-row.expanded .ex-item:nth-child(4) { animation-delay: 0.12s; }
-    .day-row.expanded .ex-item:nth-child(5) { animation-delay: 0.15s; }
-    .day-row.expanded .ex-item:nth-child(6) { animation-delay: 0.18s; }
-    .day-row.expanded .ex-item:nth-child(7) { animation-delay: 0.21s; }
-    .day-row.expanded .ex-item:nth-child(8) { animation-delay: 0.24s; }
-    .day-row.expanded .ex-item:nth-child(9) { animation-delay: 0.27s; }
+    /* staggered exercise rows on expand */
+    .day-row.expanded .ex-tr { animation: fadeInUp 0.3s var(--transition-smooth) both; }
+    .day-row.expanded .ex-tr:nth-child(1) { animation-delay: 0.03s; }
+    .day-row.expanded .ex-tr:nth-child(2) { animation-delay: 0.06s; }
+    .day-row.expanded .ex-tr:nth-child(3) { animation-delay: 0.09s; }
+    .day-row.expanded .ex-tr:nth-child(4) { animation-delay: 0.12s; }
+    .day-row.expanded .ex-tr:nth-child(5) { animation-delay: 0.15s; }
+    .day-row.expanded .ex-tr:nth-child(6) { animation-delay: 0.18s; }
+    .day-row.expanded .ex-tr:nth-child(7) { animation-delay: 0.21s; }
+    .day-row.expanded .ex-tr:nth-child(8) { animation-delay: 0.24s; }
+    .day-row.expanded .ex-tr:nth-child(9) { animation-delay: 0.27s; }
+    .day-row.expanded .ex-tr:nth-child(10) { animation-delay: 0.30s; }
+    .day-row.expanded .ex-tr:nth-child(11) { animation-delay: 0.33s; }
+    .day-row.expanded .ex-tr:nth-child(12) { animation-delay: 0.36s; }
 
     /* ── MEALS ── */
     .meals-day-tabs {
@@ -439,6 +479,7 @@
     }
     .msc-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-soft); margin-bottom: 4px; }
     .msc-value { font-size: 0.9rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .msc-cal { font-size: 0.7rem; color: var(--green); font-weight: 600; margin-top: 6px; padding: 3px 8px; background: var(--green-light); border-radius: 6px; display: inline-block; }
 
     /* staggered meal cards */
     .meal-slots .meal-slot-card { animation: scaleIn 0.3s var(--transition-smooth) both; }
@@ -955,6 +996,7 @@
         <p id="today-date"></p>
       </div>
       <div id="today-banner-area"></div>
+      <div id="today-targets-area"></div>
       <div id="today-workout-area"></div>
       <div id="today-meal-area"></div>
     </div>
@@ -1066,6 +1108,7 @@ const SCHEDULE = [
       { name: 'Bicep Curl', img:'images/exercises/bicep-curl.jpg', detail: '6 kg — slow on the way down', sets: { 1:'3×12', 2:'3×12', 3:'3×14', 4:'3×15' } },
       { name: 'Tricep Kickback', img:'images/exercises/tricep-kickback.jpg', detail: '5 kg each arm', sets: { 1:'3×12', 2:'3×12', 3:'3×14', 4:'3×15' } },
       { name: 'Push-Ups to Failure', img:'images/exercises/push-up.jpg', detail: 'Track reps — aim to beat each week', sets: { 1:'3 sets', 2:'3 sets', 3:'3 sets', 4:'3 sets' } },
+      { name: '⚡ HIIT Finisher: Burpee → Mountain Climber → Squat Jump', img:'images/exercises/burpee.jpg', detail: 'Max effort each move, 10s rest between — burns fat, not builds bulk', sets: { 1:'20s each × 2 rounds', 2:'25s each × 2', 3:'25s each × 3', 4:'30s each × 3' } },
       { name: '🧊 Cool-Down: Chest Doorway Stretch → Cross-Body Shoulder → Tricep Overhead → Wrist Stretch → Child\'s Pose', img:'images/exercises/stretch.jpg', detail: 'Doorway 30s/side, shoulder 30s/side, tricep 30s/side, wrists 30s/each, child\'s pose 60s', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' } },
       { name: '🌟 Flex: Wall Handstand Prep + Wrist Conditioning', img:'images/exercises/yoga.jpg', detail: 'Wrist circles 30s → Bear crawl hold 20s → Wall walk-ups (hands walk toward wall, feet climb)', sets: { 1:'3 walk-ups', 2:'4 walk-ups', 3:'5 walk-ups + 10s hold', 4:'5 walk-ups + 20s hold' } },
       { name: '🌟 Flex: Standing Forward Fold (Touch Toes Progress)', img:'images/exercises/yoga.jpg', detail: 'Straight legs, relax neck — let gravity pull you down, breathe into hamstrings', sets: { 1:'3 × 30s', 2:'3 × 40s', 3:'3 × 45s', 4:'3 × 60s' } },
@@ -1095,6 +1138,7 @@ const SCHEDULE = [
       { name: 'Reverse Lunge', img:'images/exercises/lunge.jpg', detail: '6–8 kg each hand', sets: { 1:'3×8 each', 2:'3×9 each', 3:'3×10 each', 4:'3×10 @8kg' } },
       { name: 'Glute Bridge', img:'images/exercises/stretch.jpg', detail: '10 kg on hips, 3 sec hold at top', sets: { 1:'3×12', 2:'3×14', 3:'3×15', 4:'3×15' } },
       { name: 'Calf Raises', img:'images/exercises/lunge.jpg', detail: 'Hold 8 kg dumbbells', sets: { 1:'3×15', 2:'3×15', 3:'3×18', 4:'3×20' } },
+      { name: '⚡ HIIT Finisher: Jump Lunges → High Knees → Squat Hold Pulses', img:'images/exercises/lunge.jpg', detail: 'Max effort, 10s rest between — targets legs + cardio burn', sets: { 1:'20s each × 2 rounds', 2:'25s each × 2', 3:'25s each × 3', 4:'30s each × 3' } },
       { name: '🧊 Cool-Down: Standing Quad Stretch → Hip Flexor Lunge → Seated Hamstring → Pigeon Pose → Figure-4 Glute', img:'images/exercises/yoga.jpg', detail: 'Quad 30s/side, hip flexor 45s/side, hamstring 45s/side, pigeon 45s/side, figure-4 30s/side', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' } },
       { name: '🌟 Flex: Frog Stretch → Pancake Stretch (Straddle)', img:'images/exercises/yoga.jpg', detail: 'Frog: knees wide, push hips back. Then seated straddle, walk hands forward — opens inner thighs for middle splits', sets: { 1:'30s frog + 30s pancake × 2', 2:'40s + 40s × 2', 3:'45s + 45s × 2', 4:'60s + 60s × 2' } },
       { name: '🌟 Flex: Cobra → Upward Dog (Backbend Progress)', img:'images/exercises/yoga.jpg', detail: 'Cobra (elbows bent) → progress to Upward Dog (arms straight, thighs off floor). Opens spine & hip flexors', sets: { 1:'Cobra 3 × 15s', 2:'Cobra 3 × 20s', 3:'Up-Dog 3 × 15s', 4:'Up-Dog 3 × 20s' } },
@@ -1131,6 +1175,7 @@ const SCHEDULE = [
       { name: 'Renegade Row', img:'images/exercises/bent-over-row.jpg', detail: '6–8 kg, brace core hard', sets: { 1:'3×8 each', 2:'3×8 each', 3:'3×10 each', 4:'3×10 @8kg' } },
       { name: 'Plank DB Pull-Through', img:'images/exercises/plank.jpg', detail: '4–6 kg', sets: { 1:'3×10 each', 2:'3×10 each', 3:'3×12 each', 4:'3×12 each' } },
       { name: 'Hollow Body Hold', img:'images/exercises/plank.jpg', detail: 'Core finisher', sets: { 1:'3×20 sec', 2:'3×25 sec', 3:'3×30 sec', 4:'3×30 sec' } },
+      { name: '⚡ HIIT Finisher: Plank Jacks → Burpees → Star Jumps', img:'images/exercises/burpee.jpg', detail: 'Max effort, 10s rest between — full body fat burn', sets: { 1:'20s each × 2 rounds', 2:'25s each × 2', 3:'25s each × 3', 4:'30s each × 3' } },
       { name: '🧊 Cool-Down: Standing Forward Fold → Supine Spinal Twist → Lying Quad Stretch → Chest Doorway → Child\'s Pose', img:'images/exercises/yoga.jpg', detail: 'Fold 45s, twist 45s/side, quad 30s/side, doorway 30s/side, child\'s pose 60s', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' } },
       { name: '🌟 Flex: Shoulder Opener (Clasped Hands Behind Back)', img:'images/exercises/yoga.jpg', detail: 'Clasp hands behind back, straighten arms, lift away from body — essential for backbends & handstands', sets: { 1:'3 × 20s', 2:'3 × 30s', 3:'3 × 30s + fold forward', 4:'3 × 40s + fold forward' } },
       { name: '🌟 Flex: Camel Pose (Deep Backbend)', img:'images/exercises/yoga.jpg', detail: 'Kneel, hands on lower back, push hips forward & lean back. Wk3-4: reach for heels', sets: { 1:'3 × 10s, hands on back', 2:'3 × 15s, hands on back', 3:'3 × 10s, reach for heels', 4:'3 × 15s, hands on heels' } },
@@ -1169,13 +1214,13 @@ const SCHEDULE = [
 ];
 
 const MEALS = [
-  { day: 'Mon', img:'images/meals/dosa.jpg', breakfast: { emoji:'🥚', text:'Egg dosa + tomato chutney' }, lunch: { emoji:'🍛', text:'Rice + sambar + beans fry + curd' }, dinner: { emoji:'🫓', text:'Dosa (2) + coconut chutney' }, snack: { emoji:'🥜', text:'Roasted groundnuts + buttermilk' } },
-  { day: 'Tue', img:'images/meals/ragi.jpg', breakfast: { emoji:'🌾', text:'Ragi porridge + jaggery' }, lunch: { emoji:'🍛', text:'Rice + rasam + potato fry + papad' }, dinner: { emoji:'🥣', text:'Oats upma + boiled egg' }, snack: { emoji:'🍌', text:'Banana + 2 dates' } },
-  { day: 'Wed', img:'images/meals/eggs.jpg', breakfast: { emoji:'🥚', text:'Boiled eggs (2–3) + banana' }, lunch: { emoji:'🍛', text:'Rice + kootu + pickle + curd' }, dinner: { emoji:'🍳', text:'Egg bhurji + 2 rotis' }, snack: { emoji:'🥛', text:'Buttermilk + handful groundnuts' } },
-  { day: 'Thu', img:'images/meals/idli.jpg', breakfast: { emoji:'🍚', text:'Curd rice + carrot + mustard tadka' }, lunch: { emoji:'🍛', text:'Rice + sambar + cabbage fry' }, dinner: { emoji:'🍤', text:'Rava idli (3) + sambar' }, snack: { emoji:'🍈', text:'Papaya / banana' } },
-  { day: 'Fri', img:'images/meals/rice-sambar.jpg', breakfast: { emoji:'🍞', text:'Banana + peanut butter on multigrain toast' }, lunch: { emoji:'🍋', text:'Curd rice + lemon rice + papad' }, dinner: { emoji:'🫓', text:'Dosa + leftover chutney' }, snack: { emoji:'🥜', text:'Chikki or roasted makhana' } },
-  { day: 'Sat', img:'images/meals/pongal.jpg', breakfast: { emoji:'🍲', text:'Pongal + coconut chutney + sambar' }, lunch: { emoji:'🥘', text:'Bisi bele bath + raita + papad' }, dinner: { emoji:'🛵', text:'Treat meal — order out guilt-free' }, snack: { emoji:'🥥', text:'Coconut water + fruit' } },
-  { day: 'Sun', img:'images/meals/idli.jpg', breakfast: { emoji:'🍜', text:'Idiyappam + coconut milk' }, lunch: { emoji:'🍛', text:'Full meals — rice, sambar, rasam, kootu' }, dinner: { emoji:'🥣', text:'Khichdi + papad + pickle' }, snack: { emoji:'📦', text:'Prep snacks for week (boil eggs)' } },
+  { day: 'Mon', img:'images/meals/dosa.jpg', breakfast: { emoji:'🥚', text:'Egg dosa (1) + tomato chutney (2 tbsp)', cal:'~320 cal · 14g protein' }, lunch: { emoji:'🍛', text:'Rice (1 cup) + sambar (1 bowl) + beans fry (½ cup) + curd (½ cup)', cal:'~450 cal · 15g protein' }, dinner: { emoji:'🫓', text:'Dosa (2 small) + coconut chutney (2 tbsp)', cal:'~280 cal · 6g protein' }, snack: { emoji:'🥜', text:'Roasted groundnuts (30g) + buttermilk (1 glass)', cal:'~200 cal · 8g protein' } },
+  { day: 'Tue', img:'images/meals/ragi.jpg', breakfast: { emoji:'🌾', text:'Ragi porridge (1 cup) + jaggery (1 tsp)', cal:'~250 cal · 6g protein' }, lunch: { emoji:'🍛', text:'Rice (1 cup) + rasam (1 bowl) + potato fry (½ cup) + papad (1)', cal:'~430 cal · 10g protein' }, dinner: { emoji:'🥣', text:'Oats upma (1 cup) + boiled egg (1)', cal:'~300 cal · 14g protein' }, snack: { emoji:'🍌', text:'Banana (1) + 2 dates', cal:'~160 cal · 2g protein' } },
+  { day: 'Wed', img:'images/meals/eggs.jpg', breakfast: { emoji:'🥚', text:'Boiled eggs (3) + banana (1)', cal:'~310 cal · 20g protein' }, lunch: { emoji:'🍛', text:'Rice (1 cup) + kootu (1 bowl) + pickle (1 tsp) + curd (½ cup)', cal:'~420 cal · 14g protein' }, dinner: { emoji:'🍳', text:'Egg bhurji (2 eggs, 1 tsp oil) + 2 rotis', cal:'~380 cal · 18g protein' }, snack: { emoji:'🥛', text:'Buttermilk (1 glass) + groundnuts (25g)', cal:'~180 cal · 8g protein' } },
+  { day: 'Thu', img:'images/meals/idli.jpg', breakfast: { emoji:'🍚', text:'Curd rice (1 cup) + carrot + mustard tadka', cal:'~280 cal · 8g protein' }, lunch: { emoji:'🍛', text:'Rice (1 cup) + sambar (1 bowl) + cabbage fry (½ cup)', cal:'~400 cal · 12g protein' }, dinner: { emoji:'🍤', text:'Rava idli (3) + sambar (1 bowl)', cal:'~320 cal · 10g protein' }, snack: { emoji:'🍈', text:'Papaya (1 cup) or banana (1)', cal:'~100 cal · 1g protein' } },
+  { day: 'Fri', img:'images/meals/rice-sambar.jpg', breakfast: { emoji:'🍞', text:'Banana + peanut butter (1 tbsp) on multigrain toast (1 slice)', cal:'~280 cal · 8g protein' }, lunch: { emoji:'🍋', text:'Curd rice (1 cup) + lemon rice (½ cup) + papad (1)', cal:'~400 cal · 10g protein' }, dinner: { emoji:'🫓', text:'Dosa (2 small) + leftover chutney', cal:'~280 cal · 6g protein' }, snack: { emoji:'🥜', text:'Chikki (1 small) or roasted makhana (1 cup)', cal:'~150 cal · 4g protein' } },
+  { day: 'Sat', img:'images/meals/pongal.jpg', breakfast: { emoji:'🍲', text:'Pongal (1 cup) + coconut chutney + sambar', cal:'~350 cal · 10g protein' }, lunch: { emoji:'🥘', text:'Bisi bele bath (1.5 cups) + raita (¼ cup) + papad (1)', cal:'~450 cal · 12g protein' }, dinner: { emoji:'🛵', text:'Treat meal — keep under 600 cal', cal:'~600 cal max' }, snack: { emoji:'🥥', text:'Coconut water (1 glass) + fruit (1 cup)', cal:'~120 cal · 1g protein' } },
+  { day: 'Sun', img:'images/meals/idli.jpg', breakfast: { emoji:'🍜', text:'Idiyappam (3) + coconut milk (½ cup)', cal:'~300 cal · 6g protein' }, lunch: { emoji:'🍛', text:'Rice (1 cup) + sambar + rasam + kootu + curd', cal:'~480 cal · 16g protein' }, dinner: { emoji:'🥣', text:'Khichdi (1 cup) + papad (1) + pickle (1 tsp)', cal:'~320 cal · 12g protein' }, snack: { emoji:'📦', text:'Prep snacks for week (boil eggs)', cal:'~50 cal' } },
 ];
 
 // ── STATE ──────────────────────────────────────────────────────────────────────
@@ -1271,21 +1316,30 @@ function countCompletedDays() {
 
 // ── RENDER EXERCISE LIST ──────────────────────────────────────────────────────
 
+function getExType(name) {
+  if (name.startsWith('🔥')) return 'warmup';
+  if (name.startsWith('🧊')) return 'cooldown';
+  if (name.startsWith('🌟')) return 'flex';
+  if (name.startsWith('⚡')) return 'hiit';
+  if (name.startsWith('🧘')) return 'warmup';
+  return '';
+}
+
 function renderExerciseList(week, sched, expanded) {
-  return sched.exercises.map((ex, ei) => {
+  const header = `<div class="ex-table-wrap"><table class="ex-table-app">
+    <thead><tr><th class="ex-th-check"></th><th>Exercise</th><th>Details</th><th>Sets</th></tr></thead><tbody>`;
+  const rows = sched.exercises.map((ex, ei) => {
     const done = isExDone(week, sched.day, ei);
     const setStr = ex.sets[week] || ex.sets[1];
-    const imgHtml = ex.img
-      ? `<div class="ex-img-wrap"><img src="${ex.img}" alt="${ex.name}" onerror="this.parentElement.style.display='none'"></div>`
-      : '';
-    return `<div class="ex-item${done ? ' done' : ''}">
-      ${imgHtml}
-      <div class="ex-row" onclick="toggleEx(${week},'${sched.day}',${ei})">
-        <div class="ex-checkbox"></div>
-        <span class="ex-text"><strong>${ex.name}</strong> <span class="ex-sets">— ${setStr}</span><br><span class="ex-detail">${ex.detail}</span></span>
-      </div>
-    </div>`;
+    const rowType = getExType(ex.name);
+    return `<tr class="ex-tr ${rowType}${done ? ' done' : ''}" onclick="toggleEx(${week},'${sched.day}',${ei})">
+      <td class="ex-td-check"><div class="ex-checkbox"></div></td>
+      <td class="ex-td-name">${ex.name}</td>
+      <td class="ex-td-detail">${ex.detail}</td>
+      <td class="ex-td-sets">${setStr}</td>
+    </tr>`;
   }).join('');
+  return header + rows + '</tbody></table></div>';
 }
 
 // ── TODAY PAGE ────────────────────────────────────────────────────────────────
@@ -1311,6 +1365,18 @@ function buildToday() {
       <div class="today-badge">${allDone ? '✅ Done!' : sched.badge.toUpperCase()}</div>
     </div>`;
 
+  // Daily targets
+  const dayCals = meal.breakfast.cal.match(/\d+/) ? [meal.breakfast, meal.lunch, meal.dinner, meal.snack].reduce((sum, m) => {
+    const match = m.cal.match(/~?(\d+)/); return sum + (match ? parseInt(match[1]) : 0);
+  }, 0) : '?';
+  document.getElementById('today-targets-area').innerHTML = `
+    <div class="daily-targets">
+      <div class="target-card"><div class="target-icon">🔥</div><div class="target-info"><div class="target-val">${dayCals} / 1500</div><div class="target-lbl">Calories</div></div></div>
+      <div class="target-card"><div class="target-icon">🥩</div><div class="target-info"><div class="target-val">70g+</div><div class="target-lbl">Protein</div></div></div>
+      <div class="target-card"><div class="target-icon">💧</div><div class="target-info"><div class="target-val">3L</div><div class="target-lbl">Water</div></div></div>
+      <div class="target-card"><div class="target-icon">👟</div><div class="target-info"><div class="target-val">8000+</div><div class="target-lbl">Steps</div></div></div>
+    </div>`;
+
   const exList = renderExerciseList(activeWeek, sched, true);
   document.getElementById('today-workout-area').innerHTML = `
     <div class="today-section-label">Today's Workout</div>
@@ -1321,10 +1387,10 @@ function buildToday() {
   document.getElementById('today-meal-area').innerHTML = `
     <div class="today-section-label">Today's Meals</div>
     <div class="meal-slots">
-      <div class="meal-slot-card meal-breakfast"><div class="msc-emoji">${meal.breakfast.emoji}</div><div class="msc-label">Breakfast</div><div class="msc-value">${meal.breakfast.text}</div></div>
-      <div class="meal-slot-card meal-lunch"><div class="msc-emoji">${meal.lunch.emoji}</div><div class="msc-label">Lunch</div><div class="msc-value">${meal.lunch.text}</div></div>
-      <div class="meal-slot-card meal-dinner"><div class="msc-emoji">${meal.dinner.emoji}</div><div class="msc-label">Dinner</div><div class="msc-value">${meal.dinner.text}</div></div>
-      <div class="meal-slot-card meal-snack"><div class="msc-emoji">${meal.snack.emoji}</div><div class="msc-label">Snack</div><div class="msc-value">${meal.snack.text}</div></div>
+      <div class="meal-slot-card meal-breakfast"><div class="msc-emoji">${meal.breakfast.emoji}</div><div class="msc-label">Breakfast</div><div class="msc-value">${meal.breakfast.text}</div><div class="msc-cal">${meal.breakfast.cal}</div></div>
+      <div class="meal-slot-card meal-lunch"><div class="msc-emoji">${meal.lunch.emoji}</div><div class="msc-label">Lunch</div><div class="msc-value">${meal.lunch.text}</div><div class="msc-cal">${meal.lunch.cal}</div></div>
+      <div class="meal-slot-card meal-dinner"><div class="msc-emoji">${meal.dinner.emoji}</div><div class="msc-label">Dinner</div><div class="msc-value">${meal.dinner.text}</div><div class="msc-cal">${meal.dinner.cal}</div></div>
+      <div class="meal-slot-card meal-snack"><div class="msc-emoji">${meal.snack.emoji}</div><div class="msc-label">Snack</div><div class="msc-value">${meal.snack.text}</div><div class="msc-cal">${meal.snack.cal}</div></div>
     </div>`;
 }
 
@@ -1452,34 +1518,47 @@ function buildMeals() {
         <img src="${m.img}" alt="${m.day} meals" class="meal-hero-img" onerror="this.parentElement.style.display='none'">
       </div>
       <div class="meal-slots">
-        <div class="meal-slot-card meal-breakfast"><div class="msc-emoji">${m.breakfast.emoji}</div><div class="msc-label">Breakfast</div><div class="msc-value">${m.breakfast.text}</div></div>
-        <div class="meal-slot-card meal-lunch"><div class="msc-emoji">${m.lunch.emoji}</div><div class="msc-label">Lunch</div><div class="msc-value">${m.lunch.text}</div></div>
-        <div class="meal-slot-card meal-dinner"><div class="msc-emoji">${m.dinner.emoji}</div><div class="msc-label">Dinner</div><div class="msc-value">${m.dinner.text}</div></div>
-        <div class="meal-slot-card meal-snack"><div class="msc-emoji">${m.snack.emoji}</div><div class="msc-label">Snack</div><div class="msc-value">${m.snack.text}</div></div>
+        <div class="meal-slot-card meal-breakfast"><div class="msc-emoji">${m.breakfast.emoji}</div><div class="msc-label">Breakfast</div><div class="msc-value">${m.breakfast.text}</div><div class="msc-cal">${m.breakfast.cal}</div></div>
+        <div class="meal-slot-card meal-lunch"><div class="msc-emoji">${m.lunch.emoji}</div><div class="msc-label">Lunch</div><div class="msc-value">${m.lunch.text}</div><div class="msc-cal">${m.lunch.cal}</div></div>
+        <div class="meal-slot-card meal-dinner"><div class="msc-emoji">${m.dinner.emoji}</div><div class="msc-label">Dinner</div><div class="msc-value">${m.dinner.text}</div><div class="msc-cal">${m.dinner.cal}</div></div>
+        <div class="meal-slot-card meal-snack"><div class="msc-emoji">${m.snack.emoji}</div><div class="msc-label">Snack</div><div class="msc-value">${m.snack.text}</div><div class="msc-cal">${m.snack.cal}</div></div>
       </div>
     </div>`).join('');
 
   document.getElementById('mealInfoGrid').innerHTML = `
+    <div class="ig-card" style="border-left:3px solid var(--orange);"><h4>Slim & Strong Goals</h4><ul>
+      <li><strong>Daily target: 1400–1500 cal</strong></li>
+      <li>Protein: 70–80g/day (preserves muscle)</li>
+      <li>Water: 3L/day (1 glass before each meal)</li>
+      <li>Steps: 8000+ (walk puppy, take stairs)</li>
+      <li>Deficit = slim · Protein = toned, not bulky</li></ul></div>
+    <div class="ig-card" style="border-left:3px solid #dc2626;"><h4>Portion Control (Key!)</h4><ul>
+      <li><strong>Rice: MAX 1 cup per meal</strong></li>
+      <li>Roti: 2 small (not 3–4)</li>
+      <li>Oil: 1 tsp per dish (measure, don't pour)</li>
+      <li>Dosa: 2 small, not 3 large</li>
+      <li>Dinner: lighter than lunch always</li></ul></div>
+    <div class="ig-card"><h4>Protein Boosters (Hit 70g!)</h4><ul>
+      <li>2–3 boiled eggs with any meal (+12-18g)</li>
+      <li>Thicken sambar with extra dal (+5g)</li>
+      <li>Rajma / chickpea curry 2×/week (+12g)</li>
+      <li>Peanuts 30g as snack (+8g)</li>
+      <li>Curd ½ cup with every lunch (+5g)</li></ul></div>
     <div class="ig-card"><h4>Sunday Prep (45 min)</h4><ul>
       <li>Boil 8 eggs for the week</li><li>Make big pot of sambar</li>
       <li>Soak / buy idli-dosa batter</li><li>Chop onions, tomatoes, veggies</li>
       <li>Cook toor dal in bulk</li></ul></div>
-    <div class="ig-card"><h4>Protein Boosters</h4><ul>
-      <li>2 boiled eggs with any meal</li><li>Thicken sambar with more dal</li>
-      <li>Rajma / chickpea curry 2×/week</li><li>Peanuts in upma, poha, rice</li>
-      <li>Curd with every lunch</li></ul></div>
-    <div class="ig-card"><h4>Always-Stocked Snacks</h4><ul>
-      <li>Roasted groundnuts</li><li>Banana / papaya</li>
-      <li>Buttermilk (chaas)</li><li>Dates (2–3 for energy)</li>
-      <li>Boiled eggs (Sunday batch)</li></ul></div>
     <div class="ig-card"><h4>Hydration</h4><ul>
-      <li>You: 2.5–3L water/day</li><li>Husband: 1L bottle on desk (visual cue)</li>
+      <li>You: 2.5–3L water/day</li>
+      <li>1 glass water 20 min before each meal</li>
       <li>Buttermilk counts toward fluids</li><li>Set reminder every 90 min</li>
-      <li>Coconut water OK, avoid sugary drinks</li></ul></div>
-    <div class="ig-card"><h4>Progressive Overload</h4><ul>
-      <li>Week 1: Form focus, 4×6 compounds</li><li>Week 2: +1 rep → 4×7</li>
-      <li>Week 3: +1 rep → 4×8</li><li>Week 4: +0.5–1 kg, back to 4×6</li>
-      <li>Last 2 reps feel easy? Go heavier</li></ul></div>`;
+      <li>Coconut water OK, no sugary drinks</li></ul></div>
+    <div class="ig-card"><h4>Fat Loss Tips</h4><ul>
+      <li>Eat slowly — 20 min minimum per meal</li>
+      <li>No snacking after 8 PM</li>
+      <li>Saturday treat: 1 meal, not all-day cheat</li>
+      <li>If weight stalls: cut rice to ½ cup</li>
+      <li>Sleep 7-8 hrs — poor sleep = weight gain</li></ul></div>`;
 }
 
 function setMealDay(i) {
