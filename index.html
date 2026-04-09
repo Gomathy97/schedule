@@ -1095,14 +1095,21 @@ const SCHEDULE = [
     ]
   },
   {
-    day: 'Thu', badge: 'recovery', title: 'Active Recovery',
-    icon: 'REC', dotClass: 'dot-recovery',
+    day: 'Thu', badge: 'recovery', title: 'Flexibility & Mobility',
+    icon: 'FLX', dotClass: 'dot-recovery',
     exercises: [
-      { name: 'Hip Flexor Stretch', img:'images/exercises/yoga.jpg', detail: 'Each side', sets: { 1:'60 sec', 2:'60 sec', 3:'75 sec', 4:'75 sec' } },
-      { name: 'Cat-Cow', img:'images/exercises/yoga.jpg', detail: 'Slow and controlled', sets: { 1:'10 reps', 2:'10 reps', 3:'12 reps', 4:'12 reps' } },
-      { name: "Child's Pose", img:'images/exercises/yoga.jpg', detail: 'Arms extended', sets: { 1:'60 sec', 2:'60 sec', 3:'90 sec', 4:'90 sec' } },
-      { name: 'Shoulder & Neck Rolls', img:'images/exercises/stretch.jpg', detail: 'Release tension from desk work', sets: { 1:'2 min', 2:'2 min', 3:'2 min', 4:'2 min' } },
-      { name: 'Spinal Twist', img:'images/exercises/yoga.jpg', detail: 'Each side', sets: { 1:'45 sec', 2:'45 sec', 3:'60 sec', 4:'60 sec' } },
+      { name: '🔥 Warm-Up: Light Jog in Place + Joint Circles', img:'images/exercises/stretch.jpg', detail: 'Jog 1min, then circle ankles, knees, hips, shoulders, wrists', sets: { 1:'3 min', 2:'3 min', 3:'3 min', 4:'3 min' } },
+      { name: 'Standing Forward Fold', img:'images/exercises/yoga.jpg', detail: 'Reach toward toes — bend knees slightly if needed, breathe deep', sets: { 1:'30 sec × 2', 2:'40 sec × 2', 3:'45 sec × 2', 4:'60 sec × 2' } },
+      { name: 'Deep Lunge Hip Flexor Stretch', img:'images/exercises/yoga.jpg', detail: 'Back knee down, push hips forward, arms overhead for deeper stretch', sets: { 1:'30 sec/side × 2', 2:'40 sec/side × 2', 3:'45 sec/side × 2', 4:'60 sec/side × 2' } },
+      { name: 'Cat-Cow', img:'images/exercises/yoga.jpg', detail: 'Slow and controlled — match movement to breath', sets: { 1:'10 reps', 2:'12 reps', 3:'15 reps', 4:'15 reps' } },
+      { name: 'Pigeon Pose', img:'images/exercises/yoga.jpg', detail: 'Deep hip opener — fold forward over front leg for more intensity', sets: { 1:'30 sec/side', 2:'40 sec/side', 3:'45 sec/side', 4:'60 sec/side' } },
+      { name: 'Seated Hamstring Stretch', img:'images/exercises/yoga.jpg', detail: 'One leg extended, reach for toes — keep back flat, hinge from hips', sets: { 1:'30 sec/side × 2', 2:'40 sec/side × 2', 3:'45 sec/side × 2', 4:'60 sec/side × 2' } },
+      { name: 'Thread the Needle (Thoracic Rotation)', img:'images/exercises/yoga.jpg', detail: 'On all fours, reach one arm under & through, then up to sky — opens upper back', sets: { 1:'8 each side', 2:'10 each side', 3:'12 each side', 4:'12 each side' } },
+      { name: 'Supine Spinal Twist', img:'images/exercises/yoga.jpg', detail: 'Lying down, knees to one side, arms wide — hold & breathe deep', sets: { 1:'30 sec/side', 2:'40 sec/side', 3:'45 sec/side', 4:'60 sec/side' } },
+      { name: 'Shoulder & Chest Doorway Stretch', img:'images/exercises/stretch.jpg', detail: 'Arms on doorframe at 90°, lean through — open tight chest from desk work', sets: { 1:'30 sec × 2', 2:'40 sec × 2', 3:'45 sec × 2', 4:'60 sec × 2' } },
+      { name: 'Figure-4 Glute Stretch', img:'images/exercises/yoga.jpg', detail: 'Lying on back, ankle on opposite knee, pull knee toward chest', sets: { 1:'30 sec/side', 2:'40 sec/side', 3:'45 sec/side', 4:'60 sec/side' } },
+      { name: 'Frog Stretch', img:'images/exercises/yoga.jpg', detail: 'Knees wide on floor, push hips back — opens inner thighs & hips', sets: { 1:'30 sec × 2', 2:'40 sec × 2', 3:'45 sec × 2', 4:'60 sec × 2' } },
+      { name: "Child's Pose + Deep Breathing", img:'images/exercises/yoga.jpg', detail: 'Arms extended, forehead down — 5 slow breaths in through nose, out through mouth', sets: { 1:'60 sec', 2:'90 sec', 3:'90 sec', 4:'2 min' } },
     ]
   },
   {
@@ -1130,9 +1137,14 @@ const SCHEDULE = [
     ]
   },
   {
-    day: 'Sun', badge: 'rest', title: 'Rest & Prep',
+    day: 'Sun', badge: 'rest', title: 'Rest, Stretch & Prep',
     icon: 'REST', dotClass: 'dot-rest',
     exercises: [
+      { name: '🧘 Gentle Morning Stretch Flow', img:'images/exercises/yoga.jpg', detail: 'Do right after waking — no rush, move slowly', sets: { 1:'8 min', 2:'8 min', 3:'10 min', 4:'10 min' } },
+      { name: 'Neck Rolls + Shoulder Shrugs', img:'images/exercises/stretch.jpg', detail: 'Slow circles each direction, then shrug & hold 5s at top', sets: { 1:'5 each way', 2:'5 each way', 3:'8 each way', 4:'8 each way' } },
+      { name: 'Seated Wide-Leg Forward Fold', img:'images/exercises/yoga.jpg', detail: 'Legs wide on floor, walk hands forward — great for inner thighs & hamstrings', sets: { 1:'30 sec × 2', 2:'40 sec × 2', 3:'45 sec × 2', 4:'60 sec × 2' } },
+      { name: 'Butterfly Stretch', img:'images/exercises/yoga.jpg', detail: 'Soles of feet together, gently press knees down with elbows', sets: { 1:'30 sec × 2', 2:'40 sec × 2', 3:'45 sec × 2', 4:'60 sec × 2' } },
+      { name: 'Cobra Stretch', img:'images/exercises/yoga.jpg', detail: 'Lie face down, press up through hands — opens abs, chest & hip flexors', sets: { 1:'20 sec × 3', 2:'25 sec × 3', 3:'30 sec × 3', 4:'30 sec × 3' } },
       { name: 'Light Movement', img:'images/exercises/stretch.jpg', detail: "Don't sit all day — walk around apartment", sets: { 1:'As needed', 2:'As needed', 3:'As needed', 4:'As needed' } },
       { name: 'Hydration', img:'images/exercises/yoga.jpg', detail: '3L water today', sets: { 1:'✓', 2:'✓', 3:'✓', 4:'✓' } },
       { name: 'Meal Prep', img:'images/recipes/sambar.jpg', detail: 'Sambar, eggs, batter, chopped veggies', sets: { 1:'45 min', 2:'45 min', 3:'45 min', 4:'45 min' } },
