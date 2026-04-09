@@ -581,6 +581,106 @@
     .streak-text h3 { font-size: 1rem; font-weight: 700; }
     .streak-text p { font-size: 0.8rem; opacity: 0.85; margin-top: 3px; }
 
+    /* ── WEIGHT CALENDAR PAGE ── */
+    .cal-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .cal-nav-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1.5px solid var(--border); background: var(--white);
+      cursor: pointer; font-size: 1rem; color: var(--text-soft);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s var(--transition-smooth);
+      box-shadow: var(--shadow-sm);
+    }
+    .cal-nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
+    .cal-month-label { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .cal-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+      margin-bottom: 24px;
+    }
+    .cal-day-header {
+      text-align: center; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; color: var(--text-soft); padding: 6px 0;
+    }
+    .cal-cell {
+      background: var(--white); border: 1.5px solid rgba(0,0,0,0.06);
+      border-radius: 10px; padding: 8px 4px; min-height: 72px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px; cursor: pointer; transition: all 0.2s var(--transition-smooth);
+      box-shadow: var(--shadow-sm); position: relative;
+    }
+    .cal-cell:hover { border-color: var(--orange); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .cal-cell.empty { background: transparent; border-color: transparent; box-shadow: none; cursor: default; min-height: 0; }
+    .cal-cell.empty:hover { transform: none; box-shadow: none; }
+    .cal-cell.today { border-color: var(--orange); background: var(--orange-light); }
+    .cal-cell.has-weight { border-color: var(--green); }
+    .cal-cell.has-weight .cal-weight-val { color: var(--green); }
+    .cal-date { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+    .cal-weight-val {
+      font-size: 0.82rem; font-weight: 800; color: var(--text-soft);
+      min-height: 18px; line-height: 1;
+    }
+    .cal-weight-unit { font-size: 0.6rem; color: var(--text-soft); }
+    .cal-input-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4); z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeIn 0.2s;
+    }
+    .cal-input-card {
+      background: var(--white); border-radius: var(--radius); padding: 28px;
+      box-shadow: var(--shadow-lg); min-width: 280px; text-align: center;
+      animation: scaleIn 0.25s var(--transition-bounce);
+    }
+    .cal-input-card h3 { font-size: 1rem; margin-bottom: 4px; }
+    .cal-input-card p { font-size: 0.8rem; color: var(--text-soft); margin-bottom: 16px; }
+    .cal-input-field {
+      width: 120px; padding: 10px 12px; border: 2px solid var(--border);
+      border-radius: 10px; font-size: 1.2rem; font-weight: 700;
+      text-align: center; outline: none; transition: border-color 0.2s;
+    }
+    .cal-input-field:focus { border-color: var(--orange); }
+    .cal-input-btns { display: flex; gap: 8px; justify-content: center; margin-top: 16px; }
+    .cal-input-btns button {
+      padding: 8px 20px; border-radius: 8px; font-size: 0.85rem;
+      font-weight: 600; cursor: pointer; border: 1.5px solid var(--border);
+      transition: all 0.15s;
+    }
+    .cal-btn-save { background: var(--orange); color: white; border-color: var(--orange); }
+    .cal-btn-save:hover { background: #c0521f; }
+    .cal-btn-cancel { background: var(--white); color: var(--text-soft); }
+    .cal-btn-cancel:hover { background: var(--grey-light); }
+    .cal-btn-clear { background: #fff1f1; color: #dc2626; border-color: #fecaca; }
+    .cal-btn-clear:hover { background: #fee2e2; }
+    .cal-summary {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px; margin-bottom: 24px;
+    }
+    .cal-summary-card {
+      background: var(--white); border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius); padding: 16px; text-align: center;
+      box-shadow: var(--shadow-sm); animation: fadeInUp 0.5s var(--transition-smooth) both;
+    }
+    .cal-summary-card:nth-child(2) { animation-delay: 0.1s; }
+    .cal-summary-card:nth-child(3) { animation-delay: 0.2s; }
+    .cal-summary-card:nth-child(4) { animation-delay: 0.3s; }
+    .cal-summary-num {
+      font-size: 1.8rem; font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, var(--orange), #e8834f);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .cal-summary-lbl { font-size: 0.72rem; color: var(--text-soft); margin-top: 4px; }
+    .cal-trend { font-size: 0.72rem; font-weight: 600; margin-top: 4px; }
+    .cal-trend.down { color: var(--green); }
+    .cal-trend.up { color: #dc2626; }
+    .cal-trend.same { color: var(--text-soft); }
+    @media (max-width: 640px) {
+      .cal-cell { min-height: 60px; padding: 6px 2px; }
+      .cal-date { font-size: 0.7rem; }
+      .cal-weight-val { font-size: 0.72rem; }
+      .cal-grid { gap: 4px; }
+      .cal-summary { grid-template-columns: repeat(2, 1fr); }
+    }
+
     /* celebration confetti */
     .day-complete-celebration {
       position: fixed; top: 50%; left: 50%;
@@ -980,6 +1080,9 @@
     <a class="nav-item" onclick="showPage('progress')" href="#">
       <span class="nav-icon">📊</span> Progress
     </a>
+    <a class="nav-item" onclick="showPage('calendar')" href="#">
+      <span class="nav-icon">📅</span> Weight Log
+    </a>
     <div class="sidebar-bottom">
       <div class="global-pct"><strong id="sb-pct">0%</strong> this month</div>
       <div class="bar-track"><div class="bar-fill" id="sb-bar" style="width:0%"></div></div>
@@ -1059,6 +1162,21 @@
       <button class="reset-btn" onclick="resetAll()">Reset Month</button>
     </div>
 
+    <!-- WEIGHT CALENDAR PAGE -->
+    <div class="page" id="page-calendar">
+      <div class="page-header">
+        <h2>Weight Log</h2>
+        <p>Track your daily weight — tap any date to log</p>
+      </div>
+      <div id="calSummary"></div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="changeCalMonth(-1)">&larr;</button>
+        <span class="cal-month-label" id="calMonthLabel"></span>
+        <button class="cal-nav-btn" onclick="changeCalMonth(1)">&rarr;</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+
   </main>
 
   <!-- MOBILE BOTTOM NAV -->
@@ -1069,6 +1187,7 @@
     <div class="bn-item" onclick="showPage('recipes',this)"><span class="bn-icon">👩‍🍳</span>Recipes</div>
     <div class="bn-item" onclick="showPage('puppy',this)"><span class="bn-icon">🐶</span>Puppy</div>
     <div class="bn-item" onclick="showPage('progress',this)"><span class="bn-icon">📊</span>Progress</div>
+    <div class="bn-item" onclick="showPage('calendar',this)"><span class="bn-icon">📅</span>Weight</div>
   </nav>
 
 </div>
@@ -1637,6 +1756,7 @@ function showPage(name, mobileEl) {
   if (name === 'progress') { buildProgress(); animateCounters(); }
   if (name === 'recipes') buildRecipes();
   if (name === 'puppy') buildPuppy();
+  if (name === 'calendar') buildCalendar();
   return false;
 }
 
@@ -1977,6 +2097,169 @@ function buildPuppy() {
   document.getElementById('puppyContent').innerHTML = html;
 }
 
+// ── WEIGHT CALENDAR ──────────────────────────────────────────────────────────
+
+let calYear = 2026;
+let calMonth = 3; // April (0-indexed)
+
+function getWeightKey(y, m, d) { return `weight_${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+
+function getWeight(y, m, d) {
+  const s = getState();
+  return s[getWeightKey(y, m, d)] || null;
+}
+
+function saveWeight(y, m, d, val) {
+  const s = getState();
+  if (val === null || val === '') {
+    delete s[getWeightKey(y, m, d)];
+  } else {
+    s[getWeightKey(y, m, d)] = parseFloat(val);
+  }
+  saveState(s);
+}
+
+function getAllWeights() {
+  const s = getState();
+  const weights = [];
+  Object.keys(s).forEach(k => {
+    if (k.startsWith('weight_')) weights.push({ date: k.replace('weight_', ''), val: s[k] });
+  });
+  weights.sort((a, b) => a.date.localeCompare(b.date));
+  return weights;
+}
+
+function changeCalMonth(delta) {
+  calMonth += delta;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  buildCalendar();
+}
+
+function openWeightInput(y, m, d) {
+  const existing = getWeight(y, m, d);
+  const dateStr = new Date(y, m, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const overlay = document.createElement('div');
+  overlay.className = 'cal-input-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  const card = document.createElement('div');
+  card.className = 'cal-input-card';
+  card.innerHTML = `
+    <h3>Log Weight</h3>
+    <p>${dateStr}</p>
+    <input type="number" class="cal-input-field" id="weightInput" value="${existing || ''}" placeholder="00.0" step="0.1" min="20" max="300">
+    <span style="font-size:0.8rem;color:var(--text-soft);margin-left:4px;">kg</span>
+    <div class="cal-input-btns">
+      ${existing ? '<button class="cal-btn-clear" id="calClearBtn">Clear</button>' : ''}
+      <button class="cal-btn-cancel" id="calCancelBtn">Cancel</button>
+      <button class="cal-btn-save" id="calSaveBtn">Save</button>
+    </div>`;
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+  const inp = document.getElementById('weightInput');
+  inp.focus();
+  document.getElementById('calSaveBtn').onclick = () => submitWeight(y, m, d);
+  document.getElementById('calCancelBtn').onclick = () => overlay.remove();
+  if (existing) document.getElementById('calClearBtn').onclick = () => clearWeight(y, m, d);
+  inp.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitWeight(y, m, d);
+    if (e.key === 'Escape') overlay.remove();
+  });
+}
+
+function submitWeight(y, m, d) {
+  const inp = document.getElementById('weightInput');
+  const val = inp ? inp.value.trim() : '';
+  if (val && !isNaN(parseFloat(val))) {
+    saveWeight(y, m, d, val);
+  }
+  document.querySelector('.cal-input-overlay')?.remove();
+  buildCalendar();
+}
+
+function clearWeight(y, m, d) {
+  saveWeight(y, m, d, null);
+  document.querySelector('.cal-input-overlay')?.remove();
+  buildCalendar();
+}
+
+function buildCalendar() {
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAY_HEADERS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const today = new Date();
+  const todayY = today.getFullYear(), todayM = today.getMonth(), todayD = today.getDate();
+
+  document.getElementById('calMonthLabel').textContent = `${MONTHS[calMonth]} ${calYear}`;
+
+  // Build summary stats
+  const allW = getAllWeights();
+  const thisMonthW = allW.filter(w => w.date.startsWith(`${calYear}-${String(calMonth+1).padStart(2,'0')}`));
+  let summaryHTML = '';
+  if (allW.length > 0) {
+    const latest = allW[allW.length - 1];
+    const first = allW[0];
+    const diff = (latest.val - first.val).toFixed(1);
+    const diffSign = diff > 0 ? '+' : '';
+    const trendClass = diff < 0 ? 'down' : diff > 0 ? 'up' : 'same';
+    const trendLabel = diff < 0 ? 'Lost' : diff > 0 ? 'Gained' : 'No change';
+    const monthVals = thisMonthW.map(w => w.val);
+    const monthMin = monthVals.length ? Math.min(...monthVals).toFixed(1) : '--';
+    const monthMax = monthVals.length ? Math.max(...monthVals).toFixed(1) : '--';
+    summaryHTML = `<div class="cal-summary">
+      <div class="cal-summary-card">
+        <div class="cal-summary-num">${latest.val}</div>
+        <div class="cal-summary-lbl">Latest (kg)</div>
+      </div>
+      <div class="cal-summary-card">
+        <div class="cal-summary-num">${allW.length}</div>
+        <div class="cal-summary-lbl">Days Logged</div>
+      </div>
+      <div class="cal-summary-card">
+        <div class="cal-summary-num">${monthMin}–${monthMax}</div>
+        <div class="cal-summary-lbl">This Month Range</div>
+      </div>
+      <div class="cal-summary-card">
+        <div class="cal-summary-num">${diffSign}${diff}</div>
+        <div class="cal-summary-lbl">${trendLabel} Overall</div>
+        <div class="cal-trend ${trendClass}">${trendLabel} ${Math.abs(diff)} kg</div>
+      </div>
+    </div>`;
+  } else {
+    summaryHTML = '<div style="text-align:center;color:var(--text-soft);font-size:0.85rem;margin-bottom:20px;padding:16px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);">Tap any date to start logging your weight</div>';
+  }
+  document.getElementById('calSummary').innerHTML = summaryHTML;
+
+  // Build calendar grid
+  const firstDay = new Date(calYear, calMonth, 1);
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  let startDow = firstDay.getDay(); // 0=Sun
+  startDow = startDow === 0 ? 6 : startDow - 1; // convert to Mon=0
+
+  let html = DAY_HEADERS.map(d => `<div class="cal-day-header">${d}</div>`).join('');
+
+  // Empty cells before first day
+  for (let i = 0; i < startDow; i++) {
+    html += '<div class="cal-cell empty"></div>';
+  }
+
+  // Day cells
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = calYear === todayY && calMonth === todayM && d === todayD;
+    const w = getWeight(calYear, calMonth, d);
+    const hasWeight = w !== null;
+    const classes = ['cal-cell'];
+    if (isToday) classes.push('today');
+    if (hasWeight) classes.push('has-weight');
+    html += `<div class="${classes.join(' ')}" onclick="openWeightInput(${calYear},${calMonth},${d})">
+      <div class="cal-date">${d}</div>
+      <div class="cal-weight-val">${hasWeight ? w.toFixed(1) : ''}</div>
+      ${hasWeight ? '<div class="cal-weight-unit">kg</div>' : ''}
+    </div>`;
+  }
+
+  document.getElementById('calGrid').innerHTML = html;
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 
 // Auto-set week based on plan start date (April 9, 2026)
@@ -1995,6 +2278,7 @@ buildMeals();
 buildRecipes();
 buildPuppy();
 buildProgress();
+buildCalendar();
 updateSidebar();
 </script>
 </body>

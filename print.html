@@ -168,6 +168,35 @@
       display: flex; justify-content: space-between;
       font-size: 0.65rem; color: #9ca3af;
     }
+
+    /* ── WEIGHT CALENDAR ── */
+    .cal-grid-print {
+      width: 100%; border-collapse: collapse; margin-top: 12px;
+    }
+    .cal-grid-print th {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      padding: 8px 4px; text-align: center; background: #f9fafb;
+      border: 1px solid #e5e7eb; color: var(--text-soft);
+    }
+    .cal-grid-print td {
+      border: 1px solid #e5e7eb; width: 14.28%;
+      height: 70px; vertical-align: top; padding: 4px 6px;
+    }
+    .cal-grid-print td.empty { background: #fafafa; }
+    .cal-date-print { font-size: 0.72rem; font-weight: 700; color: var(--text); }
+    .cal-weight-print {
+      margin-top: 8px; font-size: 0.7rem; color: var(--text-soft);
+      border-bottom: 1px dotted #d1d5db; display: inline-block;
+      min-width: 50px; text-align: center;
+    }
+    .cal-summary-print {
+      display: flex; gap: 16px; margin-top: 16px; padding: 10px;
+      border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb;
+    }
+    .cal-summary-print div {
+      font-size: 0.78rem; flex: 1; text-align: center;
+    }
+    .cal-summary-print strong { color: var(--orange); }
   </style>
 </head>
 <body>
@@ -182,6 +211,7 @@
     <option value="3">Week 3 only</option>
     <option value="4">Week 4 only</option>
     <option value="meals">Meal Plan only</option>
+    <option value="calendar">Weight Calendar</option>
   </select>
   <button class="btn btn-print" onclick="window.print()">Print / Save PDF</button>
   <a href="index.html" class="btn btn-back" style="text-decoration:none;">Back to App</a>
@@ -408,17 +438,79 @@ function buildMealPage() {
   </div>`;
 }
 
+function buildCalendarPage(monthOffset) {
+  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAY_HDRS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const baseMonth = 3; // April
+  const baseYear = 2026;
+  let y = baseYear, m = baseMonth + monthOffset;
+  while (m > 11) { m -= 12; y++; }
+  while (m < 0) { m += 12; y--; }
+
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  let startDow = new Date(y, m, 1).getDay();
+  startDow = startDow === 0 ? 6 : startDow - 1; // Mon=0
+
+  let rows = '';
+  let cells = [];
+  // Empty cells
+  for (let i = 0; i < startDow; i++) cells.push('<td class="empty"></td>');
+  // Day cells
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push(`<td><div class="cal-date-print">${d}</div><div class="cal-weight-print">_____ kg</div></td>`);
+  }
+  // Pad end
+  while (cells.length % 7 !== 0) cells.push('<td class="empty"></td>');
+  // Build rows
+  for (let i = 0; i < cells.length; i += 7) {
+    rows += '<tr>' + cells.slice(i, i + 7).join('') + '</tr>';
+  }
+
+  return `<div class="print-page">
+    <div class="day-header" style="border-color: var(--orange);">
+      <div class="day-badge" style="background: var(--orange);">📅</div>
+      <div>
+        <h2>Weight Log — ${MONTH_NAMES[m]} ${y}</h2>
+        <div class="subtitle">Track your weight daily · Weigh first thing in the morning</div>
+      </div>
+    </div>
+    <table class="cal-grid-print">
+      <thead><tr>${DAY_HDRS.map(d => '<th>' + d + '</th>').join('')}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="cal-summary-print">
+      <div>Start: <strong>_____ kg</strong></div>
+      <div>End: <strong>_____ kg</strong></div>
+      <div>Change: <strong>_____ kg</strong></div>
+      <div>Goal: <strong>_____ kg</strong></div>
+    </div>
+    <div class="notes-area">
+      <h4>Notes</h4>
+      <div class="notes-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span>FitPlan — Weight Log, ${MONTH_NAMES[m]} ${y}</span>
+      <span>Tip: Weigh at the same time daily for consistency</span>
+    </div>
+  </div>`;
+}
+
 function render() {
   const view = document.getElementById('viewSelect').value;
   let html = '';
 
   if (view === 'meals') {
     html = buildMealPage();
+  } else if (view === 'calendar') {
+    html = buildCalendarPage(0);
   } else if (view === 'all') {
     for (let w = 1; w <= 4; w++) {
       SCHEDULE.forEach(s => { html += buildDayPage(s, w); });
     }
     html += buildMealPage();
+    html += buildCalendarPage(0);
   } else {
     const w = parseInt(view);
     SCHEDULE.forEach(s => { html += buildDayPage(s, w); });
