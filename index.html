@@ -856,8 +856,11 @@ let activeMealDay = 0;
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 
 function getTodayDayName() {
-  const names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  return names[new Date().getDay()];
+  const start = new Date(2026, 3, 9); // Plan start: April 9, 2026
+  const today = new Date();
+  const daysSinceStart = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+  const idx = ((daysSinceStart % 7) + 7) % 7; // handles before start date
+  return WEEK_DAYS[idx]; // maps to Mon, Tue, Wed, ... Sun
 }
 
 function getTodaySchedule() {
