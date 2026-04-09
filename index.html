@@ -354,6 +354,57 @@
     }
     .reset-btn:hover { background: #fee2e2; }
 
+    /* ── CUSTOMIZE MODE ── */
+    .customize-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .customize-toggle {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .customize-toggle:hover { border-color: var(--orange); color: var(--orange); }
+    .customize-toggle.active { background: var(--orange); color: white; border-color: var(--orange); }
+    .move-btn {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .move-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
+    .customizing .move-btn { display: flex; }
+    .reset-order-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      cursor: pointer;
+      display: none;
+    }
+    .reset-order-btn:hover { border-color: #dc2626; color: #dc2626; }
+    .customizing .reset-order-btn { display: inline-block; }
+
     /* ── IMAGES ── */
     .day-row-img {
       width: 56px; height: 56px;
@@ -670,6 +721,10 @@
         <h2>Workouts</h2>
         <p>4-week progressive plan · Strength + Endurance · Dumbbells up to 10 kg</p>
       </div>
+      <div class="customize-bar">
+        <button class="customize-toggle" id="customizeBtn" onclick="toggleCustomize()">Customize Order</button>
+        <button class="reset-order-btn" onclick="resetOrder()">Reset to Default</button>
+      </div>
       <div class="week-tabs" id="weekTabs"></div>
       <div id="weekContent"></div>
     </div>
@@ -865,7 +920,9 @@ function getTodayDayName() {
 
 function getTodaySchedule() {
   const d = getTodayDayName();
-  return SCHEDULE.find(s => s.day === d) || SCHEDULE[0];
+  const ordered = getOrderedSchedule();
+  const idx = WEEK_DAYS.indexOf(d);
+  return ordered[idx] || ordered[0];
 }
 
 function getExId(week, dayName, ei) { return `w${week}-${dayName}-e${ei}`; }
@@ -977,6 +1034,55 @@ function buildToday() {
     </div>`;
 }
 
+// ── CUSTOMIZE ORDER ──────────────────────────────────────────────────────────
+
+let customizing = false;
+
+function getScheduleOrder() {
+  const saved = localStorage.getItem('fitplan_order');
+  if (saved) {
+    try {
+      const order = JSON.parse(saved);
+      if (Array.isArray(order) && order.length === SCHEDULE.length) return order;
+    } catch(e) {}
+  }
+  return SCHEDULE.map((_, i) => i);
+}
+
+function saveScheduleOrder(order) {
+  localStorage.setItem('fitplan_order', JSON.stringify(order));
+}
+
+function getOrderedSchedule() {
+  const order = getScheduleOrder();
+  return order.map(i => SCHEDULE[i]);
+}
+
+function moveDay(fromVisual, direction) {
+  const order = getScheduleOrder();
+  const toVisual = fromVisual + direction;
+  if (toVisual < 0 || toVisual >= order.length) return;
+  [order[fromVisual], order[toVisual]] = [order[toVisual], order[fromVisual]];
+  saveScheduleOrder(order);
+  buildWeekContent();
+  buildToday();
+}
+
+function toggleCustomize() {
+  customizing = !customizing;
+  document.getElementById('customizeBtn').classList.toggle('active', customizing);
+  document.getElementById('page-workouts').classList.toggle('customizing', customizing);
+  buildWeekContent();
+}
+
+function resetOrder() {
+  if (confirm('Reset workout order to default?')) {
+    localStorage.removeItem('fitplan_order');
+    buildWeekContent();
+    buildToday();
+  }
+}
+
 // ── WORKOUTS PAGE ─────────────────────────────────────────────────────────────
 
 function buildWeekTabs() {
@@ -990,21 +1096,28 @@ function buildWeekTabs() {
 
 function buildWeekContent() {
   const todayDay = getTodayDayName();
-  document.getElementById('weekContent').innerHTML = SCHEDULE.map(sched => {
+  const todayIdx = WEEK_DAYS.indexOf(todayDay);
+  const ordered = getOrderedSchedule();
+  document.getElementById('weekContent').innerHTML = ordered.map((sched, vi) => {
     const done = isDayDone(activeWeek, sched.day);
-    const isToday = sched.day === todayDay;
+    const isToday = vi === todayIdx;
     const exDone = sched.exercises.filter((_,ei) => isExDone(activeWeek, sched.day, ei)).length;
     const total = sched.exercises.length;
     const expanded = isToday || done ? ' expanded' : '';
 
+    const dayLabel = WEEK_DAYS[vi];
     const img = WORKOUT_IMAGES[sched.day] || '';
     return `<div class="day-row${isToday ? ' is-today' : ''}${done ? ' is-done' : ''}${expanded}" id="row-${activeWeek}-${sched.day}">
-      <div class="day-row-header" onclick="toggleRow('${activeWeek}-${sched.day}')">
-        <img src="${img}" alt="${sched.title}" class="day-row-img" onerror="this.style.display='none'">
-        <div class="day-row-meta">
-          <div class="dr-day">${sched.day}${isToday ? ' · Today' : ''}</div>
-          <div class="dr-title">${sched.title}</div>
-          <span class="badge-pill badge-${sched.badge}">${sched.badge}</span>
+      <div class="day-row-header">
+        <button class="move-btn" onclick="event.stopPropagation();moveDay(${vi},-1)" title="Move up" ${vi === 0 ? 'disabled' : ''}>▲</button>
+        <button class="move-btn" onclick="event.stopPropagation();moveDay(${vi},1)" title="Move down" ${vi === ordered.length - 1 ? 'disabled' : ''}>▼</button>
+        <div style="flex:1;display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="toggleRow('${activeWeek}-${sched.day}')">
+          <img src="${img}" alt="${sched.title}" class="day-row-img" onerror="this.style.display='none'">
+          <div class="day-row-meta">
+            <div class="dr-day">Day ${vi + 1}${isToday ? ' · Today' : ''}</div>
+            <div class="dr-title">${sched.title}</div>
+            <span class="badge-pill badge-${sched.badge}">${sched.badge}</span>
+          </div>
         </div>
         <div class="day-row-right">
           <span class="done-count">${exDone}/${total}</span>
