@@ -1474,8 +1474,10 @@ function buildPuppy() {
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 
-// Auto-set week based on current date approximation (optional: always start at 1)
-activeWeek = 1;
+// Auto-set week based on plan start date (April 9, 2026)
+const PLAN_START = new Date(2026, 3, 9); // months are 0-indexed
+const daysSinceStart = Math.floor((new Date() - PLAN_START) / (1000 * 60 * 60 * 24));
+activeWeek = Math.max(1, Math.min(4, Math.floor(daysSinceStart / 7) + 1));
 
 // Set today's meal day
 const todayIdx = MEALS.findIndex(m => m.day === getTodayDayName());
