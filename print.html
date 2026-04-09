@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitPlan — Printable Workout Sheets</title>
+  <style>
+    @page { size: A4; margin: 15mm; }
+    @media print {
+      .no-print { display: none !important; }
+      .print-page { page-break-after: always; }
+      .print-page:last-child { page-break-after: auto; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    :root {
+      --orange: #d95f2b;
+      --green: #2e9e6b;
+      --blue: #2980b9;
+      --purple: #7c4daa;
+      --grey: #6b7280;
+      --text: #111827;
+      --text-soft: #6b7280;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, 'Segoe UI', Helvetica, sans-serif; color: var(--text); background: #f5f5f5; }
+
+    /* ── CONTROLS (screen only) ── */
+    .controls {
+      position: sticky; top: 0; z-index: 100;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 16px 24px;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .controls h1 {
+      font-size: 1.1rem; font-weight: 800; color: #f4a07a; margin-right: auto;
+    }
+    .controls label { font-size: 0.82rem; color: rgba(255,255,255,0.7); font-weight: 600; }
+    .controls select {
+      padding: 6px 12px; border-radius: 8px; border: none;
+      font-size: 0.82rem; font-weight: 600; background: rgba(255,255,255,0.1);
+      color: white; cursor: pointer;
+    }
+    .controls select option { background: #1a1a2e; color: white; }
+    .btn {
+      padding: 8px 20px; border-radius: 8px; border: none;
+      font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-print { background: var(--orange); color: white; }
+    .btn-print:hover { background: #c4521f; transform: translateY(-1px); }
+    .btn-back { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+    .btn-back:hover { background: rgba(255,255,255,0.15); color: white; }
+
+    /* ── PRINT PAGE ── */
+    .print-page {
+      background: white;
+      max-width: 210mm;
+      margin: 16px auto;
+      padding: 20mm 18mm;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border-radius: 4px;
+    }
+
+    /* ── DAY HEADER ── */
+    .day-header {
+      display: flex; align-items: center; gap: 12px;
+      padding-bottom: 12px; margin-bottom: 14px;
+      border-bottom: 3px solid var(--orange);
+    }
+    .day-header.cardio { border-color: var(--blue); }
+    .day-header.recovery { border-color: var(--green); }
+    .day-header.rest { border-color: var(--grey); }
+    .day-header.endurance { border-color: var(--purple); }
+
+    .day-badge {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 800; color: white;
+      background: var(--orange); flex-shrink: 0;
+    }
+    .day-badge.cardio { background: var(--blue); }
+    .day-badge.recovery { background: var(--green); }
+    .day-badge.rest { background: var(--grey); }
+    .day-badge.endurance { background: var(--purple); }
+
+    .day-header h2 { font-size: 1.2rem; font-weight: 800; }
+    .day-header .subtitle { font-size: 0.78rem; color: var(--text-soft); margin-top: 2px; }
+
+    .week-label {
+      margin-left: auto; font-size: 0.75rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+      background: #f3f4f6; color: var(--text-soft);
+    }
+
+    /* ── EXERCISE TABLE ── */
+    .ex-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+    .ex-table th {
+      text-align: left; font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-soft); padding: 6px 8px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .ex-table td {
+      font-size: 0.78rem; padding: 7px 8px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+    .ex-table tr:last-child td { border-bottom: none; }
+    .ex-table .ex-name { font-weight: 600; min-width: 160px; }
+    .ex-table .ex-detail { color: var(--text-soft); font-size: 0.72rem; }
+    .ex-table .ex-sets { font-weight: 600; white-space: nowrap; }
+    .ex-table .checkbox-col { width: 28px; text-align: center; }
+    .checkbox-box {
+      width: 16px; height: 16px; border: 2px solid #d1d5db;
+      border-radius: 4px; display: inline-block;
+    }
+
+    .ex-table tr.warmup td { background: #fff7ed; }
+    .ex-table tr.cooldown td { background: #eff6ff; }
+    .ex-table tr.flex td { background: #fdf4ff; }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--text-soft);
+      margin: 16px 0 8px; padding-left: 8px;
+      border-left: 3px solid var(--orange);
+    }
+
+    /* ── MEAL TABLE ── */
+    .meal-table { width: 100%; border-collapse: collapse; }
+    .meal-table th {
+      text-align: left; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; padding: 8px; background: #f9fafb;
+      border-bottom: 2px solid #e5e7eb; color: var(--text-soft);
+    }
+    .meal-table td {
+      font-size: 0.78rem; padding: 8px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .meal-table .day-col { font-weight: 700; width: 50px; }
+    .meal-table .emoji { font-size: 1rem; }
+
+    /* ── NOTES AREA ── */
+    .notes-area {
+      margin-top: 16px; padding-top: 12px;
+      border-top: 1px dashed #d1d5db;
+    }
+    .notes-area h4 {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      color: var(--text-soft); margin-bottom: 6px;
+    }
+    .notes-lines {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .notes-lines .line {
+      border-bottom: 1px solid #e5e7eb; height: 1px;
+    }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      margin-top: 16px; padding-top: 8px;
+      border-top: 1px solid #e5e7eb;
+      display: flex; justify-content: space-between;
+      font-size: 0.65rem; color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+
+<div class="controls no-print">
+  <h1>FitPlan Printouts</h1>
+  <label>Show:</label>
+  <select id="viewSelect" onchange="render()">
+    <option value="all">All Weeks (28 pages)</option>
+    <option value="1">Week 1 only</option>
+    <option value="2">Week 2 only</option>
+    <option value="3">Week 3 only</option>
+    <option value="4">Week 4 only</option>
+    <option value="meals">Meal Plan only</option>
+  </select>
+  <button class="btn btn-print" onclick="window.print()">Print / Save PDF</button>
+  <a href="index.html" class="btn btn-back" style="text-decoration:none;">Back to App</a>
+</div>
+
+<div id="pages"></div>
+
+<script>
+const SCHEDULE = [
+  {
+    day: 'Mon', badge: 'strength', title: 'Upper Body Strength', icon: 'STR',
+    exercises: [
+      { name: '🔥 Warm-Up: JJ → Arm Circles → Band Pull-Aparts → Light DB Press → Push-Up to DD', detail: 'JJ 1min, circles 30s, 15 pull-aparts, 10 press, 5 push-up to DD', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' }, type:'warmup' },
+      { name: 'DB Shoulder Press', detail: '6–8 kg', sets: { 1:'4×6', 2:'4×7', 3:'4×8', 4:'4×8 @8kg' } },
+      { name: 'Bent-Over Row', detail: '8–10 kg', sets: { 1:'4×6 each', 2:'4×7', 3:'4×8', 4:'4×8 @10kg' } },
+      { name: 'Bicep Curl', detail: '6 kg — slow on the way down', sets: { 1:'3×12', 2:'3×12', 3:'3×14', 4:'3×15' } },
+      { name: 'Tricep Kickback', detail: '5 kg each arm', sets: { 1:'3×12', 2:'3×12', 3:'3×14', 4:'3×15' } },
+      { name: 'Push-Ups to Failure', detail: 'Track reps — beat each week', sets: { 1:'3 sets', 2:'3 sets', 3:'3 sets', 4:'3 sets' } },
+      { name: '🧊 Cool-Down: Chest Doorway → Shoulder → Tricep → Wrist → Child\'s Pose', detail: '30s each stretch per side, child\'s pose 60s', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' }, type:'cooldown' },
+      { name: '🌟 Wall Handstand Walk-Ups', detail: 'Hands walk toward wall, feet climb', sets: { 1:'3 walk-ups', 2:'4 walk-ups', 3:'5 + 10s hold', 4:'5 + 20s hold' }, type:'flex' },
+      { name: '🌟 Standing Forward Fold', detail: 'Straight legs, relax neck, breathe into hamstrings', sets: { 1:'3 × 30s', 2:'3 × 40s', 3:'3 × 45s', 4:'3 × 60s' }, type:'flex' },
+    ]
+  },
+  {
+    day: 'Tue', badge: 'cardio', title: 'Cardio Endurance', icon: 'CAR',
+    exercises: [
+      { name: '🔥 Warm-up: March in place', detail: 'Get heart rate up', sets: { 1:'2 min', 2:'2 min', 3:'2 min', 4:'2 min' }, type:'warmup' },
+      { name: 'Jumping Jacks', detail: 'Work / Rest intervals', sets: { 1:'40s on / 20s off × 4', 2:'40s/20s × 4', 3:'45s/15s × 5', 4:'45s/15s × 5' } },
+      { name: 'Mountain Climbers', detail: 'Keep hips level', sets: { 1:'40s × 4', 2:'40s × 4', 3:'45s × 5', 4:'45s × 5' } },
+      { name: 'Squat Jumps', detail: 'Land soft', sets: { 1:'40s × 4', 2:'40s × 4', 3:'45s × 5', 4:'45s × 5' } },
+      { name: 'Burpees', detail: 'Full extension at top', sets: { 1:'40s × 4', 2:'40s × 4', 3:'45s × 5', 4:'45s × 5' } },
+      { name: '🧊 Cool-down: Slow breathing + stretch', detail: 'Full body', sets: { 1:'3 min', 2:'3 min', 3:'3 min', 4:'3 min' }, type:'cooldown' },
+      { name: '🌟 Deep Lunge → Half Splits', detail: 'Low lunge then straighten front leg, hinge forward', sets: { 1:'2 rounds/side', 2:'2 rounds, deeper', 3:'3 rounds/side', 4:'3 rounds, forehead→shin' }, type:'flex' },
+      { name: '🌟 Bridge Pose (Backbend Prep)', detail: 'Feet hip-width, press hips UP, squeeze glutes', sets: { 1:'3 × 15s hold', 2:'3 × 20s hold', 3:'3 × 25s hold', 4:'3 × 30s hold' }, type:'flex' },
+    ]
+  },
+  {
+    day: 'Wed', badge: 'strength', title: 'Lower Body Strength', icon: 'LEG',
+    exercises: [
+      { name: '🔥 Warm-Up: March → Leg Swings → BW Squats → Glute Bridges → Lunges', detail: 'March 1min, 10 swings/leg, 15 squats, 10 bridges, 8 lunges/leg', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' }, type:'warmup' },
+      { name: 'DB Deadlift', detail: '10 kg', sets: { 1:'4×6', 2:'4×7', 3:'4×8', 4:'4×8 heavier' } },
+      { name: 'Goblet Squat', detail: '8–10 kg', sets: { 1:'4×6', 2:'4×8', 3:'4×10', 4:'4×10 @10kg' } },
+      { name: 'Reverse Lunge', detail: '6–8 kg each hand', sets: { 1:'3×8 each', 2:'3×9 each', 3:'3×10 each', 4:'3×10 @8kg' } },
+      { name: 'Glute Bridge', detail: '10 kg on hips, 3s hold at top', sets: { 1:'3×12', 2:'3×14', 3:'3×15', 4:'3×15' } },
+      { name: 'Calf Raises', detail: 'Hold 8 kg dumbbells', sets: { 1:'3×15', 2:'3×15', 3:'3×18', 4:'3×20' } },
+      { name: '🧊 Cool-Down: Quad → Hip Flexor → Hamstring → Pigeon → Figure-4', detail: '30-45s each stretch per side', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' }, type:'cooldown' },
+      { name: '🌟 Frog Stretch → Pancake Straddle', detail: 'Frog: knees wide, hips back. Pancake: seated straddle, walk forward', sets: { 1:'30s each × 2', 2:'40s each × 2', 3:'45s each × 2', 4:'60s each × 2' }, type:'flex' },
+      { name: '🌟 Cobra → Upward Dog', detail: 'Cobra (elbows bent) → Up-Dog (arms straight, thighs off floor)', sets: { 1:'Cobra 3×15s', 2:'Cobra 3×20s', 3:'Up-Dog 3×15s', 4:'Up-Dog 3×20s' }, type:'flex' },
+    ]
+  },
+  {
+    day: 'Thu', badge: 'recovery', title: 'Flexibility & Mobility', icon: 'FLX',
+    exercises: [
+      { name: '🔥 Warm-Up: Light Jog + Joint Circles', detail: 'Jog 1min, circle ankles, knees, hips, shoulders, wrists', sets: { 1:'3 min', 2:'3 min', 3:'3 min', 4:'3 min' }, type:'warmup' },
+      { name: 'Standing Forward Fold', detail: 'Reach toward toes, breathe deep', sets: { 1:'30s × 2', 2:'40s × 2', 3:'45s × 2', 4:'60s × 2' } },
+      { name: 'Deep Lunge Hip Flexor Stretch', detail: 'Back knee down, push hips forward, arms overhead', sets: { 1:'30s/side × 2', 2:'40s/side × 2', 3:'45s/side × 2', 4:'60s/side × 2' } },
+      { name: 'Cat-Cow', detail: 'Match movement to breath', sets: { 1:'10 reps', 2:'12 reps', 3:'15 reps', 4:'15 reps' } },
+      { name: 'Pigeon Pose', detail: 'Fold forward over front leg for more intensity', sets: { 1:'30s/side', 2:'40s/side', 3:'45s/side', 4:'60s/side' } },
+      { name: 'Seated Hamstring Stretch', detail: 'One leg extended, hinge from hips', sets: { 1:'30s/side × 2', 2:'40s/side × 2', 3:'45s/side × 2', 4:'60s/side × 2' } },
+      { name: 'Thread the Needle', detail: 'Thoracic rotation — reach under then up to sky', sets: { 1:'8 each side', 2:'10 each side', 3:'12 each side', 4:'12 each side' } },
+      { name: 'Supine Spinal Twist', detail: 'Lying, knees to one side, arms wide', sets: { 1:'30s/side', 2:'40s/side', 3:'45s/side', 4:'60s/side' } },
+      { name: 'Shoulder & Chest Doorway Stretch', detail: 'Arms on doorframe at 90°, lean through', sets: { 1:'30s × 2', 2:'40s × 2', 3:'45s × 2', 4:'60s × 2' } },
+      { name: 'Figure-4 Glute Stretch', detail: 'Ankle on opposite knee, pull toward chest', sets: { 1:'30s/side', 2:'40s/side', 3:'45s/side', 4:'60s/side' } },
+      { name: 'Frog Stretch', detail: 'Knees wide, push hips back', sets: { 1:'30s × 2', 2:'40s × 2', 3:'45s × 2', 4:'60s × 2' } },
+      { name: '🌟 Dolphin Pose (Headstand Prep)', detail: 'Forearms down, hips high like DD on forearms', sets: { 1:'3 × 15s', 2:'3 × 20s', 3:'3 × 25s, lift 1 leg', 4:'3 × 30s, alt legs' }, type:'flex' },
+      { name: '🌟 Wheel Pose Prep (Full Bridge)', detail: 'Hands by ears, press up', sets: { 1:'3 bridge lifts 10s', 2:'3 × 15s hold', 3:'Try full wheel 2×', 4:'Full wheel 3×10s' }, type:'flex' },
+      { name: '🌟 Crow Pose Practice', detail: 'Knees on triceps, lean forward, lift feet. Pillow in front!', sets: { 1:'5 attempts, 3s', 2:'5 attempts, 5s', 3:'5 attempts, 8s goal', 4:'5 attempts, 10s+' }, type:'flex' },
+      { name: 'Child\'s Pose + Deep Breathing', detail: '5 slow breaths, in through nose, out through mouth', sets: { 1:'60 sec', 2:'90 sec', 3:'90 sec', 4:'2 min' }, type:'cooldown' },
+    ]
+  },
+  {
+    day: 'Fri', badge: 'strength', title: 'Full Body Strength', icon: 'FBD',
+    exercises: [
+      { name: '🔥 Warm-Up: JJ → Inchworms → WGS → Goblet Squat → Scap Push-Ups', detail: 'JJ 1min, 5 inchworms, 3 WGS/side, 10 squats, 10 scap push-ups', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' }, type:'warmup' },
+      { name: 'DB Push Press', detail: '6–8 kg', sets: { 1:'4×6', 2:'4×7', 3:'4×8', 4:'4×8 @8kg' } },
+      { name: 'Sumo Squat', detail: '10 kg, 2 sec descent', sets: { 1:'4×8', 2:'4×8', 3:'4×10', 4:'4×10' } },
+      { name: 'Renegade Row', detail: '6–8 kg, brace core hard', sets: { 1:'3×8 each', 2:'3×8 each', 3:'3×10 each', 4:'3×10 @8kg' } },
+      { name: 'Plank DB Pull-Through', detail: '4–6 kg', sets: { 1:'3×10 each', 2:'3×10 each', 3:'3×12 each', 4:'3×12 each' } },
+      { name: 'Hollow Body Hold', detail: 'Core finisher', sets: { 1:'3×20 sec', 2:'3×25 sec', 3:'3×30 sec', 4:'3×30 sec' } },
+      { name: '🧊 Cool-Down: Forward Fold → Spinal Twist → Quad → Doorway → Child\'s Pose', detail: '30-45s each stretch per side', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' }, type:'cooldown' },
+      { name: '🌟 Shoulder Opener (Clasped Hands Behind)', detail: 'Clasp hands, straighten arms, lift away from body', sets: { 1:'3 × 20s', 2:'3 × 30s', 3:'3 × 30s + fold', 4:'3 × 40s + fold' }, type:'flex' },
+      { name: '🌟 Camel Pose (Deep Backbend)', detail: 'Kneel, hands on lower back, lean back', sets: { 1:'3×10s hands on back', 2:'3×15s hands on back', 3:'3×10s reach heels', 4:'3×15s on heels' }, type:'flex' },
+    ]
+  },
+  {
+    day: 'Sat', badge: 'endurance', title: 'Endurance Session', icon: 'END',
+    exercises: [
+      { name: '🔥 Warm-Up: Jog → High Knees → Butt Kicks → Arm Circles → 2 Rounds', detail: 'Jog 1min, 30s each, circles 1min, 2× (5 squats + 5 push-ups)', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' }, type:'warmup' },
+      { name: 'Stair Intervals', detail: 'Up-down = 1 round', sets: { 1:'× 15 rounds', 2:'× 15 rounds', 3:'× 20 rounds', 4:'× 20 rounds' } },
+      { name: 'DB Complex (5 kg)', detail: 'Curl → Press → Squat → Row, no rest', sets: { 1:'3 rounds × 8', 2:'3 rounds × 8', 3:'4 rounds × 8', 4:'4 rounds × 10' } },
+      { name: 'Puppy Floor Play', detail: 'Active playtime counts!', sets: { 1:'10 min', 2:'10 min', 3:'10 min', 4:'10 min' } },
+      { name: '🧊 Cool-Down Stretch', detail: 'Full body', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' }, type:'cooldown' },
+      { name: '🌟 Tree Pose + Warrior III (Balance)', detail: 'Tree: foot on thigh, hands up. WIII: hinge forward', sets: { 1:'20s each side', 2:'25s each', 3:'30s each', 4:'30s, eyes closed tree' }, type:'flex' },
+      { name: '🌟 Wall Headstand Practice', detail: 'Forearms down, walk feet in, lift legs to wall', sets: { 1:'Dolphin + leg × 5', 2:'Both legs wall 3×10s', 3:'3×15s', 4:'3×20s, try free' }, type:'flex' },
+    ]
+  },
+  {
+    day: 'Sun', badge: 'rest', title: 'Rest, Stretch & Prep', icon: 'REST',
+    exercises: [
+      { name: '🧘 Gentle Morning Stretch Flow', detail: 'Right after waking, move slowly', sets: { 1:'8 min', 2:'8 min', 3:'10 min', 4:'10 min' }, type:'warmup' },
+      { name: 'Neck Rolls + Shoulder Shrugs', detail: 'Slow circles, shrug & hold 5s', sets: { 1:'5 each way', 2:'5 each way', 3:'8 each way', 4:'8 each way' } },
+      { name: 'Seated Wide-Leg Forward Fold', detail: 'Walk hands forward, inner thighs & hamstrings', sets: { 1:'30s × 2', 2:'40s × 2', 3:'45s × 2', 4:'60s × 2' } },
+      { name: 'Butterfly Stretch', detail: 'Soles together, press knees down', sets: { 1:'30s × 2', 2:'40s × 2', 3:'45s × 2', 4:'60s × 2' } },
+      { name: 'Cobra Stretch', detail: 'Face down, press up — opens chest & hip flexors', sets: { 1:'20s × 3', 2:'25s × 3', 3:'30s × 3', 4:'30s × 3' } },
+      { name: '🌟 Weekly Pose Challenge', detail: 'Try each, note progress. Photo/video to track!', sets: { 1:'Forward fold — how close?', 2:'Bridge 30s + crow 5s?', 3:'Headstand 20s + camel?', 4:'Wheel + crow 10s + headstand!' }, type:'flex' },
+      { name: '🌟 Splits Progression', detail: 'Low lunge → half splits → slide into full splits. Use blocks', sets: { 1:'30s each side', 2:'40s, sink deeper', 3:'45s + middle split try', 4:'60s + middle split 30s' }, type:'flex' },
+      { name: 'Light Movement', detail: 'Walk around apartment', sets: { 1:'As needed', 2:'As needed', 3:'As needed', 4:'As needed' } },
+      { name: 'Meal Prep', detail: 'Sambar, eggs, batter, chopped veggies', sets: { 1:'45 min', 2:'45 min', 3:'45 min', 4:'45 min' } },
+      { name: 'Log Weights', detail: 'Note what you lifted this week', sets: { 1:'5 min', 2:'5 min', 3:'5 min', 4:'5 min' } },
+    ]
+  },
+];
+
+const MEALS = [
+  { day: 'Mon', breakfast: '🥚 Egg dosa + tomato chutney', lunch: '🍛 Rice + sambar + beans fry + curd', dinner: '🫓 Dosa (2) + coconut chutney', snack: '🥜 Roasted groundnuts + buttermilk' },
+  { day: 'Tue', breakfast: '🌾 Ragi porridge + jaggery', lunch: '🍛 Rice + rasam + potato fry + papad', dinner: '🥣 Oats upma + boiled egg', snack: '🍌 Banana + 2 dates' },
+  { day: 'Wed', breakfast: '🥚 Boiled eggs (2–3) + banana', lunch: '🍛 Rice + kootu + pickle + curd', dinner: '🍳 Egg bhurji + 2 rotis', snack: '🥛 Buttermilk + groundnuts' },
+  { day: 'Thu', breakfast: '🍚 Curd rice + carrot + mustard tadka', lunch: '🍛 Rice + sambar + cabbage fry', dinner: '🍤 Rava idli (3) + sambar', snack: '🍈 Papaya / banana' },
+  { day: 'Fri', breakfast: '🍞 Banana + PB on multigrain toast', lunch: '🍋 Curd rice + lemon rice + papad', dinner: '🫓 Dosa + leftover chutney', snack: '🥜 Chikki or roasted makhana' },
+  { day: 'Sat', breakfast: '🍲 Pongal + coconut chutney + sambar', lunch: '🥘 Bisi bele bath + raita + papad', dinner: '🛵 Treat meal — order out!', snack: '🥥 Coconut water + fruit' },
+  { day: 'Sun', breakfast: '🍜 Idiyappam + coconut milk', lunch: '🍛 Full meals — rice, sambar, rasam, kootu', dinner: '🥣 Khichdi + papad + pickle', snack: '📦 Prep snacks (boil eggs)' },
+];
+
+const BADGE_COLORS = { strength: '#d95f2b', cardio: '#2980b9', recovery: '#2e9e6b', rest: '#6b7280', endurance: '#7c4daa' };
+const DAY_NAMES = { Mon:'Monday', Tue:'Tuesday', Wed:'Wednesday', Thu:'Thursday', Fri:'Friday', Sat:'Saturday', Sun:'Sunday' };
+
+function buildDayPage(sched, week) {
+  const color = BADGE_COLORS[sched.badge];
+  return `<div class="print-page">
+    <div class="day-header ${sched.badge}">
+      <div class="day-badge ${sched.badge}">${sched.icon}</div>
+      <div>
+        <h2>${DAY_NAMES[sched.day]} — ${sched.title}</h2>
+        <div class="subtitle">4-Week Progressive Plan · Dumbbells up to 10 kg</div>
+      </div>
+      <div class="week-label">Week ${week}</div>
+    </div>
+    <table class="ex-table">
+      <thead>
+        <tr>
+          <th class="checkbox-col">✓</th>
+          <th>Exercise</th>
+          <th>Details</th>
+          <th>Sets / Duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sched.exercises.map(ex => `
+          <tr class="${ex.type || ''}">
+            <td class="checkbox-col"><span class="checkbox-box"></span></td>
+            <td class="ex-name">${ex.name}</td>
+            <td class="ex-detail">${ex.detail}</td>
+            <td class="ex-sets">${ex.sets[week]}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    <div class="notes-area">
+      <h4>Notes / Weight Log</h4>
+      <div class="notes-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span>FitPlan — ${DAY_NAMES[sched.day]}, Week ${week}</span>
+      <span>Date: _______________</span>
+    </div>
+  </div>`;
+}
+
+function buildMealPage() {
+  return `<div class="print-page">
+    <div class="day-header" style="border-color: #2e9e6b;">
+      <div class="day-badge" style="background: #2e9e6b;">🥗</div>
+      <div>
+        <h2>Weekly Meal Plan</h2>
+        <div class="subtitle">South Indian rotation · Simple · Batch-cook friendly</div>
+      </div>
+    </div>
+    <table class="meal-table">
+      <thead>
+        <tr><th>Day</th><th>Breakfast</th><th>Lunch</th><th>Dinner</th><th>Snack</th></tr>
+      </thead>
+      <tbody>
+        ${MEALS.map(m => `
+          <tr>
+            <td class="day-col">${m.day}</td>
+            <td>${m.breakfast}</td>
+            <td>${m.lunch}</td>
+            <td>${m.dinner}</td>
+            <td>${m.snack}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    <div class="section-divider" style="border-color: #2e9e6b; margin-top: 20px;">Sunday Prep (45 min)</div>
+    <table class="ex-table" style="margin-top: 8px;">
+      <tbody>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Boil 8 eggs for the week</td><td></td><td></td></tr>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Make big pot of sambar</td><td></td><td></td></tr>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Soak / buy idli-dosa batter</td><td></td><td></td></tr>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Chop onions, tomatoes, veggies</td><td></td><td></td></tr>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Cook toor dal in bulk</td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <div class="section-divider" style="border-color: #2e9e6b;">Quick Reminders</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;font-size:0.78rem;">
+      <div><strong>Protein:</strong> 2 eggs with any meal, curd every lunch, rajma/chickpea 2×/week</div>
+      <div><strong>Hydration:</strong> You: 2.5–3L/day, husband: 1L bottle on desk, reminder every 90 min</div>
+      <div><strong>Snacks:</strong> Roasted groundnuts, banana, buttermilk, dates (2–3), boiled eggs</div>
+      <div><strong>Progressive Overload:</strong> W1: 4×6 → W2: 4×7 → W3: 4×8 → W4: +0.5–1kg back to 4×6</div>
+    </div>
+    <div class="page-footer" style="margin-top: 24px;">
+      <span>FitPlan — Weekly Meal Plan</span>
+      <span>Pin in kitchen!</span>
+    </div>
+  </div>`;
+}
+
+function render() {
+  const view = document.getElementById('viewSelect').value;
+  let html = '';
+
+  if (view === 'meals') {
+    html = buildMealPage();
+  } else if (view === 'all') {
+    for (let w = 1; w <= 4; w++) {
+      SCHEDULE.forEach(s => { html += buildDayPage(s, w); });
+    }
+    html += buildMealPage();
+  } else {
+    const w = parseInt(view);
+    SCHEDULE.forEach(s => { html += buildDayPage(s, w); });
+    html += buildMealPage();
+  }
+
+  document.getElementById('pages').innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>
