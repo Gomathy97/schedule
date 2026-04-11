@@ -227,26 +227,29 @@
     .cal-summary-print strong { color: var(--orange); }
 
     /* ── MEASUREMENTS & WELLNESS PRINT ── */
-    .measure-table-print { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .measure-table-print { width: 100%; border-collapse: collapse; margin-top: 8px; table-layout: fixed; }
     .measure-table-print th {
       font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
       padding: 4px 5px; text-align: center; background: #f9fafb;
       border: 1px solid #e5e7eb; color: var(--text-soft);
     }
+    .measure-table-print th:first-child { width: 22%; text-align: left; }
     .measure-table-print td {
       border: 1px solid #e5e7eb; padding: 6px 5px; text-align: center;
       font-size: 0.7rem; height: 28px;
     }
-    .wellness-table-print { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .wellness-table-print { width: 100%; border-collapse: collapse; margin-top: 8px; table-layout: fixed; }
     .wellness-table-print th {
       font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
       padding: 4px 3px; text-align: center; background: #f9fafb;
       border: 1px solid #e5e7eb; color: var(--text-soft);
     }
+    .wellness-table-print th:first-child { width: 22%; text-align: left; }
     .wellness-table-print td {
       border: 1px solid #e5e7eb; padding: 5px 3px; text-align: center;
-      font-size: 0.68rem; width: 14.28%;
+      font-size: 0.68rem;
     }
+    .wellness-table-print td:first-child { text-align: left; }
     .wellness-table-print td .well-check { width: 12px; height: 12px; border: 1.5px solid #d1d5db; border-radius: 3px; display: inline-block; }
   </style>
 </head>
@@ -527,32 +530,25 @@ function buildMeasurePage() {
     `<tr><td style="font-weight:600;text-align:left;">${p}</td><td></td><td></td><td></td><td></td><td></td></tr>`
   ).join('');
 
-  return `<div class="print-page-full">
+  return `<div class="print-page">
     <div class="day-header" style="border-color: var(--purple);">
       <div class="day-badge" style="background: var(--purple);">📏</div>
       <div>
-        <h2>Body Measurements Tracker</h2>
-        <div class="subtitle">Measure weekly · Same day, morning, before eating · Use a soft tape measure</div>
+        <h2>Body Measurements</h2>
+        <div class="subtitle">Weekly · Same day, morning, before eating</div>
       </div>
     </div>
     <table class="measure-table-print">
-      <thead><tr><th>Body Part</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>Change</th></tr></thead>
+      <thead><tr><th>Body Part</th><th>Wk 1</th><th>Wk 2</th><th>Wk 3</th><th>Wk 4</th><th>Change</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <div style="margin-top:12px;">
+    <div style="margin-top:8px;">
       <div class="section-divider" style="border-color: var(--purple);">How to Measure</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;font-size:0.68rem;">
-        <div><strong>Waist:</strong> At the narrowest point, usually 1 inch above the belly button. Relax — don't suck in.</div>
-        <div><strong>Hips:</strong> At the widest point around your hips and buttocks.</div>
-        <div><strong>Bust:</strong> Around the fullest part of the chest, tape level across the back.</div>
-        <div><strong>Thigh:</strong> At the widest part, usually right below the crease where leg meets hip.</div>
-        <div><strong>Upper Arm:</strong> Midway between shoulder and elbow, arm relaxed at your side.</div>
-        <div><strong>Tip:</strong> The scale fluctuates daily (water, food, hormones). Inches and how clothes fit tell the real story!</div>
+      <div style="font-size:0.6rem;margin-top:3px;line-height:1.4;">
+        <div><strong>Waist:</strong> Narrowest point, 1" above belly button. <strong>Hips:</strong> Widest point.</div>
+        <div><strong>Bust:</strong> Fullest part, tape level. <strong>Thigh:</strong> Widest, below crease.</div>
+        <div><strong>Upper Arm:</strong> Midway shoulder-elbow, relaxed.</div>
       </div>
-    </div>
-    <div class="page-footer">
-      <span>FitPlan — Body Measurements</span>
-      <span>Measure every Sunday morning</span>
     </div>
   </div>`;
 }
@@ -575,22 +571,21 @@ function buildWellnessPage() {
     DAYS.map(() => '<td><span class="well-check"></span></td>').join('') + '</tr>'
   ).join('');
 
-  return `<div class="print-page-full">
+  return `<div class="print-page">
     <div class="day-header" style="border-color: var(--green);">
       <div class="day-badge" style="background: var(--green);">✅</div>
       <div>
-        <h2>Weekly Wellness Tracker</h2>
-        <div class="subtitle">Check off each habit daily · Consistency > Perfection</div>
+        <h2>Wellness Tracker</h2>
+        <div class="subtitle">Week ___ · Check off daily</div>
       </div>
     </div>
 
-    <div class="section-divider" style="border-color: var(--green);">Week ___  Habits</div>
     <table class="wellness-table-print">
       <thead>${headerRow}</thead>
       <tbody>${bodyRows}</tbody>
     </table>
 
-    <div class="section-divider" style="border-color: var(--green); margin-top: 12px;">Daily Sleep & Water Log</div>
+    <div class="section-divider" style="border-color: var(--green); margin-top: 8px;">Daily Log</div>
     <table class="measure-table-print">
       <thead><tr><th></th>${DAYS.map(d => '<th>' + d + '</th>').join('')}</tr></thead>
       <tbody>
@@ -601,17 +596,9 @@ function buildWellnessPage() {
       </tbody>
     </table>
 
-    <div class="section-divider" style="border-color: var(--orange); margin-top: 12px;">Supplement Guide</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;font-size:0.68rem;">
-      <div><strong>💊 Vitamin D3 (1000 IU):</strong> After breakfast with fat. Essential for bone health and mood.</div>
-      <div><strong>💊 B12:</strong> Morning, especially on vegetarian days. Supports energy and nervous system.</div>
-      <div><strong>💊 Iron:</strong> With Vitamin C (lemon water) for absorption. NOT with tea/coffee/calcium.</div>
-      <div><strong>💊 Calcium:</strong> With dinner. Take separately from iron (4+ hrs apart).</div>
-    </div>
-
-    <div class="page-footer">
-      <span>FitPlan — Weekly Wellness</span>
-      <span>Print one per week · Pin at your desk</span>
+    <div class="section-divider" style="border-color: var(--orange); margin-top: 8px;">Supplements</div>
+    <div style="font-size:0.6rem;margin-top:3px;line-height:1.4;">
+      <div><strong>D3:</strong> After breakfast w/ fat. <strong>B12:</strong> Morning, esp. veg days. <strong>Iron:</strong> With Vit C, not tea/coffee. <strong>Calcium:</strong> Dinner, 4hrs from iron.</div>
     </div>
   </div>`;
 }
@@ -647,15 +634,14 @@ function render() {
   } else if (view === 'calendar') {
     html = buildCalendarPage(0) + buildCalendarPage(1);
   } else if (view === 'wellness') {
-    html = buildMeasurePage() + buildWellnessPage();
+    html = buildPair(buildMeasurePage(), buildWellnessPage());
   } else if (view === 'all') {
     for (let w = 1; w <= 4; w++) {
       html += buildWeekPages(w, true);
     }
     html += buildCalendarPage(0);
     html += buildCalendarPage(1);
-    html += buildMeasurePage();
-    html += buildWellnessPage();
+    html += buildPair(buildMeasurePage(), buildWellnessPage());
   } else {
     const w = parseInt(view);
     html += buildWeekPages(w, true);
