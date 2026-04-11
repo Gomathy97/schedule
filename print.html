@@ -71,7 +71,7 @@
       flex: 1; min-width: 0;
     }
     .print-pair .print-page + .print-page {
-      border-left: 1.5px solid #d1d5db;
+      border-left: 3px solid #374151;
       padding-left: 10px;
     }
 
@@ -93,94 +93,107 @@
     /* ── DAY HEADER ── */
     .day-header {
       display: flex; align-items: center; gap: 8px;
-      padding-bottom: 6px; margin-bottom: 8px;
-      border-bottom: 2px solid var(--orange);
+      padding: 7px 10px; margin-bottom: 8px;
+      border-bottom: 3px solid var(--orange);
+      background: linear-gradient(135deg, #d95f2b, #e8845a);
+      border-radius: 6px 6px 0 0;
+      color: white;
     }
-    .day-header.cardio { border-color: var(--blue); }
-    .day-header.recovery { border-color: var(--green); }
-    .day-header.rest { border-color: var(--grey); }
-    .day-header.endurance { border-color: var(--purple); }
+    .day-header.cardio { border-color: var(--blue); background: linear-gradient(135deg, #2980b9, #4fa3d9); }
+    .day-header.recovery { border-color: var(--green); background: linear-gradient(135deg, #2e9e6b, #4fc08d); }
+    .day-header.rest { border-color: var(--grey); background: linear-gradient(135deg, #6b7280, #8d95a1); }
+    .day-header.endurance { border-color: var(--purple); background: linear-gradient(135deg, #7c4daa, #9b72c4); }
 
     .day-badge {
-      width: 32px; height: 32px; border-radius: 8px;
+      width: 38px; height: 38px; border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.6rem; font-weight: 800; color: white;
-      background: var(--orange); flex-shrink: 0;
+      font-size: 0.72rem; font-weight: 800; color: white;
+      background: #e8845a; flex-shrink: 0;
+      border: 2px solid #f0a882;
     }
-    .day-badge.cardio { background: var(--blue); }
-    .day-badge.recovery { background: var(--green); }
-    .day-badge.rest { background: var(--grey); }
-    .day-badge.endurance { background: var(--purple); }
+    .day-badge.cardio { background: #4fa3d9; border-color: #7bbde6; }
+    .day-badge.recovery { background: #4fc08d; border-color: #7dd4aa; }
+    .day-badge.rest { background: #8d95a1; border-color: #a8aeb7; }
+    .day-badge.endurance { background: #9b72c4; border-color: #b494d4; }
 
-    .day-header h2 { font-size: 1rem; font-weight: 800; }
-    .day-header .subtitle { font-size: 0.68rem; color: var(--text-soft); margin-top: 1px; }
+    .day-header h2 { font-size: 1.08rem; font-weight: 800; color: white; }
+    .day-header .subtitle { font-size: 0.72rem; color: #f0e6df; margin-top: 1px; }
 
     .week-label {
-      margin-left: auto; font-size: 0.68rem; font-weight: 700;
-      padding: 3px 10px; border-radius: 20px;
-      background: #f3f4f6; color: var(--text-soft);
+      margin-left: auto; font-size: 0.72rem; font-weight: 800;
+      padding: 3px 12px; border-radius: 20px;
+      background: #e8845a; color: white;
+      border: 1.5px solid #f0a882;
     }
+    .cardio .week-label { background: #4fa3d9; border-color: #7bbde6; }
+    .recovery .week-label { background: #4fc08d; border-color: #7dd4aa; }
+    .rest .week-label { background: #8d95a1; border-color: #a8aeb7; }
+    .endurance .week-label { background: #9b72c4; border-color: #b494d4; }
 
     /* ── EXERCISE TABLE ── */
     .ex-table { width: 100%; border-collapse: collapse; margin-top: 2px; }
     .ex-table th {
-      text-align: left; font-size: 0.6rem; font-weight: 700;
+      text-align: left; font-size: 0.65rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.5px;
-      color: var(--text-soft); padding: 3px 5px;
-      border-bottom: 2px solid #e5e7eb;
+      color: white; padding: 4px 5px;
+      border-bottom: 2px solid #d1d5db;
+      background: #374151;
     }
     .ex-table td {
-      font-size: 0.7rem; padding: 3px 5px;
-      border-bottom: 1px solid #f3f4f6;
+      font-size: 0.76rem; padding: 3.5px 5px;
+      border-bottom: 1px solid #e5e7eb;
       vertical-align: top;
       line-height: 1.3;
     }
+    .ex-table tbody tr:nth-child(even) td { background: #f7f8fa; }
     .ex-table tr:last-child td { border-bottom: none; }
-    .ex-table .ex-name { font-weight: 600; min-width: 140px; }
-    .ex-table .ex-detail { color: var(--text-soft); font-size: 0.65rem; }
-    .ex-table .ex-sets { font-weight: 600; white-space: nowrap; }
-    .ex-table .checkbox-col { width: 22px; text-align: center; }
+    .ex-table .ex-name { font-weight: 700; min-width: 140px; }
+    .ex-table .ex-detail { color: var(--text-soft); font-size: 0.7rem; }
+    .ex-table .ex-sets { font-weight: 800; white-space: nowrap; color: #1e293b; }
+    .ex-table .checkbox-col { width: 24px; text-align: center; }
     .checkbox-box {
-      width: 13px; height: 13px; border: 1.5px solid #d1d5db;
-      border-radius: 3px; display: inline-block;
+      width: 16px; height: 16px; border: 2.5px solid #9ca3af;
+      border-radius: 5px; display: inline-block;
     }
 
-    .ex-table tr.warmup td { background: #fff7ed; }
-    .ex-table tr.cooldown td { background: #eff6ff; }
-    .ex-table tr.flex td { background: #fdf4ff; }
-    .ex-table tr.hiit td { background: #fef2f2; }
+    .ex-table tr.warmup td { background: #fde9d5; border-left: 3px solid var(--orange); }
+    .ex-table tr.cooldown td { background: #d6eaf8; border-left: 3px solid var(--blue); }
+    .ex-table tr.flex td { background: #ede4f7; border-left: 3px solid var(--purple); }
+    .ex-table tr.hiit td { background: #fcd5d5; border-left: 3px solid #dc2626; }
 
     /* ── SECTION DIVIDER ── */
     .section-divider {
-      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.5px; color: var(--text-soft);
-      margin: 10px 0 4px; padding-left: 6px;
-      border-left: 2px solid var(--orange);
+      font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--text);
+      margin: 10px 0 4px; padding-left: 8px;
+      border-left: 4px solid var(--orange);
     }
 
     /* ── MEAL TABLE ── */
     .meal-table { width: 100%; border-collapse: collapse; }
     .meal-table th {
-      text-align: left; font-size: 0.62rem; font-weight: 700;
-      text-transform: uppercase; padding: 4px 5px; background: #f9fafb;
-      border-bottom: 2px solid #e5e7eb; color: var(--text-soft);
+      text-align: left; font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; padding: 4px 5px;
+      background: linear-gradient(135deg, #2e9e6b, #4fc08d);
+      border-bottom: 2px solid #2e9e6b; color: white;
     }
     .meal-table td {
-      font-size: 0.68rem; padding: 4px 5px;
-      border-bottom: 1px solid #f3f4f6;
+      font-size: 0.74rem; padding: 4px 5px;
+      border-bottom: 1px solid #e5e7eb;
       line-height: 1.3;
     }
-    .meal-table .day-col { font-weight: 700; width: 36px; }
+    .meal-table tbody tr:nth-child(even) td { background: #f0faf5; }
+    .meal-table .day-col { font-weight: 800; width: 36px; color: var(--green); }
     .meal-table .emoji { font-size: 0.85rem; }
 
     /* ── NOTES AREA ── */
     .notes-area {
       margin-top: 8px; padding-top: 6px;
-      border-top: 1px dashed #d1d5db;
+      border-top: 2px dashed #9ca3af;
     }
     .notes-area h4 {
-      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
-      color: var(--text-soft); margin-bottom: 4px;
+      font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+      color: var(--text); margin-bottom: 4px;
     }
     .notes-lines {
       display: flex; flex-direction: column; gap: 10px;
@@ -192,9 +205,9 @@
     /* ── FOOTER ── */
     .page-footer {
       margin-top: 8px; padding-top: 4px;
-      border-top: 1px solid #e5e7eb;
+      border-top: 2px solid #e5e7eb;
       display: flex; justify-content: space-between;
-      font-size: 0.6rem; color: #9ca3af;
+      font-size: 0.66rem; color: #6b7280; font-weight: 600;
     }
 
     /* ── WEIGHT CALENDAR ── */
@@ -202,55 +215,61 @@
       width: 100%; border-collapse: collapse; margin-top: 8px;
     }
     .cal-grid-print th {
-      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
-      padding: 4px 3px; text-align: center; background: #f9fafb;
-      border: 1px solid #e5e7eb; color: var(--text-soft);
+      font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+      padding: 5px 3px; text-align: center;
+      background: linear-gradient(135deg, #d95f2b, #e8845a);
+      border: 1px solid #c4521f; color: white;
     }
     .cal-grid-print td {
-      border: 1px solid #e5e7eb; width: 14.28%;
+      border: 1px solid #d1d5db; width: 14.28%;
       height: 55px; vertical-align: top; padding: 3px 4px;
     }
-    .cal-grid-print td.empty { background: #fafafa; }
-    .cal-date-print { font-size: 0.65rem; font-weight: 700; color: var(--text); }
+    .cal-grid-print td.empty { background: #f3f4f6; }
+    .cal-date-print { font-size: 0.72rem; font-weight: 800; color: var(--orange); }
     .cal-weight-print {
-      margin-top: 4px; font-size: 0.62rem; color: var(--text-soft);
-      border-bottom: 1px dotted #d1d5db; display: inline-block;
+      margin-top: 4px; font-size: 0.68rem; color: var(--text-soft);
+      border-bottom: 1.5px dotted #9ca3af; display: inline-block;
       min-width: 40px; text-align: center;
     }
     .cal-summary-print {
-      display: flex; gap: 12px; margin-top: 10px; padding: 6px;
-      border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb;
+      display: flex; gap: 12px; margin-top: 10px; padding: 8px;
+      border: 2px solid var(--orange); border-radius: 6px;
+      background: linear-gradient(135deg, #fef3ee, #fff7ed);
     }
     .cal-summary-print div {
-      font-size: 0.7rem; flex: 1; text-align: center;
+      font-size: 0.76rem; flex: 1; text-align: center; font-weight: 600;
     }
-    .cal-summary-print strong { color: var(--orange); }
+    .cal-summary-print strong { color: var(--orange); font-weight: 800; }
 
     /* ── MEASUREMENTS & WELLNESS PRINT ── */
     .measure-table-print { width: 100%; border-collapse: collapse; margin-top: 8px; table-layout: fixed; }
     .measure-table-print th {
-      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
-      padding: 4px 5px; text-align: center; background: #f9fafb;
-      border: 1px solid #e5e7eb; color: var(--text-soft);
+      font-size: 0.66rem; font-weight: 700; text-transform: uppercase;
+      padding: 5px 5px; text-align: center;
+      background: linear-gradient(135deg, #7c4daa, #9b72c4);
+      border: 1px solid #6a3d96; color: white;
     }
     .measure-table-print th:first-child { width: 22%; text-align: left; }
     .measure-table-print td {
       border: 1px solid #e5e7eb; padding: 6px 5px; text-align: center;
-      font-size: 0.7rem; height: 28px;
+      font-size: 0.76rem; height: 28px;
     }
+    .measure-table-print tbody tr:nth-child(even) td { background: #f5f0fa; }
     .wellness-table-print { width: 100%; border-collapse: collapse; margin-top: 8px; table-layout: fixed; }
     .wellness-table-print th {
-      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
-      padding: 4px 3px; text-align: center; background: #f9fafb;
-      border: 1px solid #e5e7eb; color: var(--text-soft);
+      font-size: 0.64rem; font-weight: 700; text-transform: uppercase;
+      padding: 5px 3px; text-align: center;
+      background: linear-gradient(135deg, #2e9e6b, #4fc08d);
+      border: 1px solid #268a5b; color: white;
     }
     .wellness-table-print th:first-child { width: 22%; text-align: left; }
     .wellness-table-print td {
       border: 1px solid #e5e7eb; padding: 5px 3px; text-align: center;
-      font-size: 0.68rem;
+      font-size: 0.74rem;
     }
-    .wellness-table-print td:first-child { text-align: left; }
-    .wellness-table-print td .well-check { width: 12px; height: 12px; border: 1.5px solid #d1d5db; border-radius: 3px; display: inline-block; }
+    .wellness-table-print td:first-child { text-align: left; font-weight: 700; }
+    .wellness-table-print tbody tr:nth-child(even) td { background: #f0faf5; }
+    .wellness-table-print td .well-check { width: 15px; height: 15px; border: 2.5px solid #9ca3af; border-radius: 5px; display: inline-block; }
   </style>
 </head>
 <body>
