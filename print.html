@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FitPlan — Printable Workout Sheets</title>
   <style>
-    @page { size: A4; margin: 15mm; }
+    @page { size: A4 landscape; margin: 6mm 8mm; }
     @media print {
       .no-print { display: none !important; }
-      .print-page { page-break-after: always; }
-      .print-page:last-child { page-break-after: auto; }
-      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .print-pair { page-break-after: always; page-break-inside: avoid; }
+      .print-pair:last-child { page-break-after: auto; }
+      .print-page { box-shadow: none !important; border-radius: 0 !important; margin: 0 !important; }
+      .print-page-full { page-break-after: always; page-break-inside: avoid; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+      .print-page-full:last-child { page-break-after: auto; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white; }
     }
 
     :root {
@@ -54,21 +57,44 @@
     .btn-back { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
     .btn-back:hover { background: rgba(255,255,255,0.15); color: white; }
 
-    /* ── PRINT PAGE ── */
-    .print-page {
+    /* ── TWO-UP PAIR (two days side by side on one landscape page) ── */
+    .print-pair {
+      display: flex; gap: 10px;
+      max-width: 297mm;
+      margin: 12px auto;
       background: white;
-      max-width: 210mm;
-      margin: 16px auto;
-      padding: 20mm 18mm;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border-radius: 4px;
+      padding: 6mm 8mm;
+    }
+    .print-pair .print-page {
+      flex: 1; min-width: 0;
+    }
+    .print-pair .print-page + .print-page {
+      border-left: 1.5px solid #d1d5db;
+      padding-left: 10px;
+    }
+
+    /* ── FULL-WIDTH PAGE (meal plan, calendar, etc.) ── */
+    .print-page-full {
+      background: white;
+      max-width: 297mm;
+      margin: 12px auto;
+      padding: 6mm 8mm;
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
       border-radius: 4px;
     }
 
+    /* ── PRINT PAGE (used inside pairs) ── */
+    .print-page {
+      background: white;
+    }
+
     /* ── DAY HEADER ── */
     .day-header {
-      display: flex; align-items: center; gap: 12px;
-      padding-bottom: 12px; margin-bottom: 14px;
-      border-bottom: 3px solid var(--orange);
+      display: flex; align-items: center; gap: 8px;
+      padding-bottom: 6px; margin-bottom: 8px;
+      border-bottom: 2px solid var(--orange);
     }
     .day-header.cardio { border-color: var(--blue); }
     .day-header.recovery { border-color: var(--green); }
@@ -76,9 +102,9 @@
     .day-header.endurance { border-color: var(--purple); }
 
     .day-badge {
-      width: 44px; height: 44px; border-radius: 10px;
+      width: 32px; height: 32px; border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem; font-weight: 800; color: white;
+      font-size: 0.6rem; font-weight: 800; color: white;
       background: var(--orange); flex-shrink: 0;
     }
     .day-badge.cardio { background: var(--blue); }
@@ -86,36 +112,37 @@
     .day-badge.rest { background: var(--grey); }
     .day-badge.endurance { background: var(--purple); }
 
-    .day-header h2 { font-size: 1.2rem; font-weight: 800; }
-    .day-header .subtitle { font-size: 0.78rem; color: var(--text-soft); margin-top: 2px; }
+    .day-header h2 { font-size: 1rem; font-weight: 800; }
+    .day-header .subtitle { font-size: 0.68rem; color: var(--text-soft); margin-top: 1px; }
 
     .week-label {
-      margin-left: auto; font-size: 0.75rem; font-weight: 700;
-      padding: 4px 12px; border-radius: 20px;
+      margin-left: auto; font-size: 0.68rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
       background: #f3f4f6; color: var(--text-soft);
     }
 
     /* ── EXERCISE TABLE ── */
-    .ex-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+    .ex-table { width: 100%; border-collapse: collapse; margin-top: 2px; }
     .ex-table th {
-      text-align: left; font-size: 0.65rem; font-weight: 700;
+      text-align: left; font-size: 0.6rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.5px;
-      color: var(--text-soft); padding: 6px 8px;
+      color: var(--text-soft); padding: 3px 5px;
       border-bottom: 2px solid #e5e7eb;
     }
     .ex-table td {
-      font-size: 0.78rem; padding: 7px 8px;
+      font-size: 0.7rem; padding: 3px 5px;
       border-bottom: 1px solid #f3f4f6;
       vertical-align: top;
+      line-height: 1.3;
     }
     .ex-table tr:last-child td { border-bottom: none; }
-    .ex-table .ex-name { font-weight: 600; min-width: 160px; }
-    .ex-table .ex-detail { color: var(--text-soft); font-size: 0.72rem; }
+    .ex-table .ex-name { font-weight: 600; min-width: 140px; }
+    .ex-table .ex-detail { color: var(--text-soft); font-size: 0.65rem; }
     .ex-table .ex-sets { font-weight: 600; white-space: nowrap; }
-    .ex-table .checkbox-col { width: 28px; text-align: center; }
+    .ex-table .checkbox-col { width: 22px; text-align: center; }
     .checkbox-box {
-      width: 16px; height: 16px; border: 2px solid #d1d5db;
-      border-radius: 4px; display: inline-block;
+      width: 13px; height: 13px; border: 1.5px solid #d1d5db;
+      border-radius: 3px; display: inline-block;
     }
 
     .ex-table tr.warmup td { background: #fff7ed; }
@@ -125,37 +152,38 @@
 
     /* ── SECTION DIVIDER ── */
     .section-divider {
-      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.5px; color: var(--text-soft);
-      margin: 16px 0 8px; padding-left: 8px;
-      border-left: 3px solid var(--orange);
+      margin: 10px 0 4px; padding-left: 6px;
+      border-left: 2px solid var(--orange);
     }
 
     /* ── MEAL TABLE ── */
     .meal-table { width: 100%; border-collapse: collapse; }
     .meal-table th {
-      text-align: left; font-size: 0.7rem; font-weight: 700;
-      text-transform: uppercase; padding: 8px; background: #f9fafb;
+      text-align: left; font-size: 0.62rem; font-weight: 700;
+      text-transform: uppercase; padding: 4px 5px; background: #f9fafb;
       border-bottom: 2px solid #e5e7eb; color: var(--text-soft);
     }
     .meal-table td {
-      font-size: 0.78rem; padding: 8px;
+      font-size: 0.68rem; padding: 4px 5px;
       border-bottom: 1px solid #f3f4f6;
+      line-height: 1.3;
     }
-    .meal-table .day-col { font-weight: 700; width: 50px; }
-    .meal-table .emoji { font-size: 1rem; }
+    .meal-table .day-col { font-weight: 700; width: 36px; }
+    .meal-table .emoji { font-size: 0.85rem; }
 
     /* ── NOTES AREA ── */
     .notes-area {
-      margin-top: 16px; padding-top: 12px;
+      margin-top: 8px; padding-top: 6px;
       border-top: 1px dashed #d1d5db;
     }
     .notes-area h4 {
-      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-      color: var(--text-soft); margin-bottom: 6px;
+      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+      color: var(--text-soft); margin-bottom: 4px;
     }
     .notes-lines {
-      display: flex; flex-direction: column; gap: 14px;
+      display: flex; flex-direction: column; gap: 10px;
     }
     .notes-lines .line {
       border-bottom: 1px solid #e5e7eb; height: 1px;
@@ -163,63 +191,63 @@
 
     /* ── FOOTER ── */
     .page-footer {
-      margin-top: 16px; padding-top: 8px;
+      margin-top: 8px; padding-top: 4px;
       border-top: 1px solid #e5e7eb;
       display: flex; justify-content: space-between;
-      font-size: 0.65rem; color: #9ca3af;
+      font-size: 0.6rem; color: #9ca3af;
     }
 
     /* ── WEIGHT CALENDAR ── */
     .cal-grid-print {
-      width: 100%; border-collapse: collapse; margin-top: 12px;
+      width: 100%; border-collapse: collapse; margin-top: 8px;
     }
     .cal-grid-print th {
-      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-      padding: 8px 4px; text-align: center; background: #f9fafb;
+      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+      padding: 4px 3px; text-align: center; background: #f9fafb;
       border: 1px solid #e5e7eb; color: var(--text-soft);
     }
     .cal-grid-print td {
       border: 1px solid #e5e7eb; width: 14.28%;
-      height: 70px; vertical-align: top; padding: 4px 6px;
+      height: 55px; vertical-align: top; padding: 3px 4px;
     }
     .cal-grid-print td.empty { background: #fafafa; }
-    .cal-date-print { font-size: 0.72rem; font-weight: 700; color: var(--text); }
+    .cal-date-print { font-size: 0.65rem; font-weight: 700; color: var(--text); }
     .cal-weight-print {
-      margin-top: 8px; font-size: 0.7rem; color: var(--text-soft);
+      margin-top: 4px; font-size: 0.62rem; color: var(--text-soft);
       border-bottom: 1px dotted #d1d5db; display: inline-block;
-      min-width: 50px; text-align: center;
+      min-width: 40px; text-align: center;
     }
     .cal-summary-print {
-      display: flex; gap: 16px; margin-top: 16px; padding: 10px;
+      display: flex; gap: 12px; margin-top: 10px; padding: 6px;
       border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb;
     }
     .cal-summary-print div {
-      font-size: 0.78rem; flex: 1; text-align: center;
+      font-size: 0.7rem; flex: 1; text-align: center;
     }
     .cal-summary-print strong { color: var(--orange); }
 
     /* ── MEASUREMENTS & WELLNESS PRINT ── */
-    .measure-table-print { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .measure-table-print { width: 100%; border-collapse: collapse; margin-top: 8px; }
     .measure-table-print th {
-      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-      padding: 8px; text-align: center; background: #f9fafb;
+      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+      padding: 4px 5px; text-align: center; background: #f9fafb;
       border: 1px solid #e5e7eb; color: var(--text-soft);
     }
     .measure-table-print td {
-      border: 1px solid #e5e7eb; padding: 12px 8px; text-align: center;
-      font-size: 0.78rem; height: 36px;
+      border: 1px solid #e5e7eb; padding: 6px 5px; text-align: center;
+      font-size: 0.7rem; height: 28px;
     }
-    .wellness-table-print { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .wellness-table-print { width: 100%; border-collapse: collapse; margin-top: 8px; }
     .wellness-table-print th {
-      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
-      padding: 6px 4px; text-align: center; background: #f9fafb;
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      padding: 4px 3px; text-align: center; background: #f9fafb;
       border: 1px solid #e5e7eb; color: var(--text-soft);
     }
     .wellness-table-print td {
-      border: 1px solid #e5e7eb; padding: 8px 4px; text-align: center;
-      font-size: 0.75rem; width: 14.28%;
+      border: 1px solid #e5e7eb; padding: 5px 3px; text-align: center;
+      font-size: 0.68rem; width: 14.28%;
     }
-    .wellness-table-print td .well-check { width: 14px; height: 14px; border: 1.5px solid #d1d5db; border-radius: 3px; display: inline-block; }
+    .wellness-table-print td .well-check { width: 12px; height: 12px; border: 1.5px solid #d1d5db; border-radius: 3px; display: inline-block; }
   </style>
 </head>
 <body>
@@ -234,7 +262,7 @@
     <option value="3">Week 3 only</option>
     <option value="4">Week 4 only</option>
     <option value="meals">Meal Plan only</option>
-    <option value="calendar">Weight Calendar</option>
+    <option value="calendar">Weight Calendar (Apr + May)</option>
     <option value="wellness">Wellness & Measurements</option>
   </select>
   <button class="btn btn-print" onclick="window.print()">Print / Save PDF</button>
@@ -366,15 +394,14 @@ const BADGE_COLORS = { strength: '#d95f2b', cardio: '#2980b9', recovery: '#2e9e6
 const DAY_NAMES = { Mon:'Monday', Tue:'Tuesday', Wed:'Wednesday', Thu:'Thursday', Fri:'Friday', Sat:'Saturday', Sun:'Sunday' };
 
 function buildDayPage(sched, week) {
-  const color = BADGE_COLORS[sched.badge];
   return `<div class="print-page">
     <div class="day-header ${sched.badge}">
       <div class="day-badge ${sched.badge}">${sched.icon}</div>
       <div>
         <h2>${DAY_NAMES[sched.day]} — ${sched.title}</h2>
-        <div class="subtitle">4-Week Progressive Plan · Dumbbells up to 10 kg</div>
+        <div class="subtitle">Week ${week} · Dumbbells up to 10 kg</div>
       </div>
-      <div class="week-label">Week ${week}</div>
+      <div class="week-label">W${week}</div>
     </div>
     <table class="ex-table">
       <thead>
@@ -395,22 +422,6 @@ function buildDayPage(sched, week) {
           </tr>`).join('')}
       </tbody>
     </table>
-    <div style="display:flex;gap:8px;margin-top:14px;font-size:0.72rem;">
-      <div style="flex:1;padding:6px 10px;border-radius:6px;background:#fff7ed;text-align:center;"><strong>🔥 1400–1500 cal</strong></div>
-      <div style="flex:1;padding:6px 10px;border-radius:6px;background:#ecfdf5;text-align:center;"><strong>🥩 70g+ protein</strong></div>
-      <div style="flex:1;padding:6px 10px;border-radius:6px;background:#eff6ff;text-align:center;"><strong>💧 3L water</strong></div>
-      <div style="flex:1;padding:6px 10px;border-radius:6px;background:#f3ecfb;text-align:center;"><strong>👟 8000+ steps</strong></div>
-    </div>
-    <div class="notes-area">
-      <h4>Notes / Weight Log</h4>
-      <div class="notes-lines">
-        <div class="line"></div><div class="line"></div><div class="line"></div>
-      </div>
-    </div>
-    <div class="page-footer">
-      <span>FitPlan — ${DAY_NAMES[sched.day]}, Week ${week}</span>
-      <span>Date: _______________ Weight: _______ kg</span>
-    </div>
   </div>`;
 }
 
@@ -419,8 +430,8 @@ function buildMealPage() {
     <div class="day-header" style="border-color: #2e9e6b;">
       <div class="day-badge" style="background: #2e9e6b;">🥗</div>
       <div>
-        <h2>Weekly Meal Plan</h2>
-        <div class="subtitle">South Indian rotation · Simple · Batch-cook friendly</div>
+        <h2>Meal Plan</h2>
+        <div class="subtitle">South Indian · Batch-cook friendly</div>
       </div>
     </div>
     <table class="meal-table">
@@ -438,27 +449,16 @@ function buildMealPage() {
           </tr>`).join('')}
       </tbody>
     </table>
-    <div class="section-divider" style="border-color: #2e9e6b; margin-top: 20px;">Sunday Prep (45 min)</div>
-    <table class="ex-table" style="margin-top: 8px;">
+    <div class="section-divider" style="border-color: #2e9e6b; margin-top: 8px;">Sunday Prep</div>
+    <table class="ex-table" style="margin-top: 2px;">
       <tbody>
-        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Boil 8 eggs for the week</td><td></td><td></td></tr>
-        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Make big pot of sambar</td><td></td><td></td></tr>
-        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Soak / buy idli-dosa batter</td><td></td><td></td></tr>
-        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Chop onions, tomatoes, veggies</td><td></td><td></td></tr>
-        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Cook toor dal in bulk</td><td></td><td></td></tr>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Boil 8 eggs</td><td></td><td></td></tr>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Make sambar</td><td></td><td></td></tr>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Idli-dosa batter</td><td></td><td></td></tr>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Chop veggies</td><td></td><td></td></tr>
+        <tr><td class="checkbox-col"><span class="checkbox-box"></span></td><td>Cook toor dal</td><td></td><td></td></tr>
       </tbody>
     </table>
-    <div class="section-divider" style="border-color: #2e9e6b;">Quick Reminders</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;font-size:0.78rem;">
-      <div><strong>Protein:</strong> 2 eggs with any meal, curd every lunch, rajma/chickpea 2×/week</div>
-      <div><strong>Hydration:</strong> You: 2.5–3L/day, husband: 1L bottle on desk, reminder every 90 min</div>
-      <div><strong>Snacks:</strong> Roasted groundnuts, banana, buttermilk, dates (2–3), boiled eggs</div>
-      <div><strong>Progressive Overload:</strong> W1: 4×6 → W2: 4×7 → W3: 4×8 → W4: +0.5–1kg back to 4×6</div>
-    </div>
-    <div class="page-footer" style="margin-top: 24px;">
-      <span>FitPlan — Weekly Meal Plan</span>
-      <span>Pin in kitchen!</span>
-    </div>
   </div>`;
 }
 
@@ -490,7 +490,7 @@ function buildCalendarPage(monthOffset) {
     rows += '<tr>' + cells.slice(i, i + 7).join('') + '</tr>';
   }
 
-  return `<div class="print-page">
+  return `<div class="print-page-full">
     <div class="day-header" style="border-color: var(--orange);">
       <div class="day-badge" style="background: var(--orange);">📅</div>
       <div>
@@ -527,7 +527,7 @@ function buildMeasurePage() {
     `<tr><td style="font-weight:600;text-align:left;">${p}</td><td></td><td></td><td></td><td></td><td></td></tr>`
   ).join('');
 
-  return `<div class="print-page">
+  return `<div class="print-page-full">
     <div class="day-header" style="border-color: var(--purple);">
       <div class="day-badge" style="background: var(--purple);">📏</div>
       <div>
@@ -539,9 +539,9 @@ function buildMeasurePage() {
       <thead><tr><th>Body Part</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>Change</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <div style="margin-top:20px;">
+    <div style="margin-top:12px;">
       <div class="section-divider" style="border-color: var(--purple);">How to Measure</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;font-size:0.78rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;font-size:0.68rem;">
         <div><strong>Waist:</strong> At the narrowest point, usually 1 inch above the belly button. Relax — don't suck in.</div>
         <div><strong>Hips:</strong> At the widest point around your hips and buttocks.</div>
         <div><strong>Bust:</strong> Around the fullest part of the chest, tape level across the back.</div>
@@ -575,7 +575,7 @@ function buildWellnessPage() {
     DAYS.map(() => '<td><span class="well-check"></span></td>').join('') + '</tr>'
   ).join('');
 
-  return `<div class="print-page">
+  return `<div class="print-page-full">
     <div class="day-header" style="border-color: var(--green);">
       <div class="day-badge" style="background: var(--green);">✅</div>
       <div>
@@ -590,7 +590,7 @@ function buildWellnessPage() {
       <tbody>${bodyRows}</tbody>
     </table>
 
-    <div class="section-divider" style="border-color: var(--green); margin-top: 20px;">Daily Sleep & Water Log</div>
+    <div class="section-divider" style="border-color: var(--green); margin-top: 12px;">Daily Sleep & Water Log</div>
     <table class="measure-table-print">
       <thead><tr><th></th>${DAYS.map(d => '<th>' + d + '</th>').join('')}</tr></thead>
       <tbody>
@@ -601,8 +601,8 @@ function buildWellnessPage() {
       </tbody>
     </table>
 
-    <div class="section-divider" style="border-color: var(--orange); margin-top: 20px;">Supplement Guide</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;font-size:0.78rem;">
+    <div class="section-divider" style="border-color: var(--orange); margin-top: 12px;">Supplement Guide</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;font-size:0.68rem;">
       <div><strong>💊 Vitamin D3 (1000 IU):</strong> After breakfast with fat. Essential for bone health and mood.</div>
       <div><strong>💊 B12:</strong> Morning, especially on vegetarian days. Supports energy and nervous system.</div>
       <div><strong>💊 Iron:</strong> With Vitamin C (lemon water) for absorption. NOT with tea/coffee/calcium.</div>
@@ -616,28 +616,49 @@ function buildWellnessPage() {
   </div>`;
 }
 
+// Pair two days side-by-side on one landscape A4 page.
+// Per week: [Mon+Tue], [Wed+Thu], [Fri+Sat], [Sun + Meal Plan]
+const DAY_PAIRS = [[0,1],[2,3],[4,5]]; // indices into SCHEDULE; Sun (6) paired with meals
+
+function buildPair(left, right) {
+  return `<div class="print-pair">${left}${right || ''}</div>`;
+}
+
+function buildWeekPages(w, includeMeals) {
+  let html = '';
+  DAY_PAIRS.forEach(pair => {
+    html += buildPair(buildDayPage(SCHEDULE[pair[0]], w), buildDayPage(SCHEDULE[pair[1]], w));
+  });
+  // Sun (index 6) paired with meal plan
+  if (includeMeals) {
+    html += buildPair(buildDayPage(SCHEDULE[6], w), buildMealPage());
+  } else {
+    html += buildPair(buildDayPage(SCHEDULE[6], w));
+  }
+  return html;
+}
+
 function render() {
   const view = document.getElementById('viewSelect').value;
   let html = '';
 
   if (view === 'meals') {
-    html = buildMealPage();
+    html = `<div class="print-pair">${buildMealPage()}</div>`;
   } else if (view === 'calendar') {
-    html = buildCalendarPage(0);
+    html = buildCalendarPage(0) + buildCalendarPage(1);
   } else if (view === 'wellness') {
     html = buildMeasurePage() + buildWellnessPage();
   } else if (view === 'all') {
     for (let w = 1; w <= 4; w++) {
-      SCHEDULE.forEach(s => { html += buildDayPage(s, w); });
+      html += buildWeekPages(w, true);
     }
-    html += buildMealPage();
     html += buildCalendarPage(0);
+    html += buildCalendarPage(1);
     html += buildMeasurePage();
     html += buildWellnessPage();
   } else {
     const w = parseInt(view);
-    SCHEDULE.forEach(s => { html += buildDayPage(s, w); });
-    html += buildMealPage();
+    html += buildWeekPages(w, true);
   }
 
   document.getElementById('pages').innerHTML = html;
