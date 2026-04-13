@@ -638,6 +638,44 @@
     .wi-text { font-size: 0.82rem; }
     .wellness-progress { font-size: 0.72rem; color: var(--text-soft); margin-top: 8px; text-align: right; }
 
+    /* ── DESK MOBILITY PAGE ── */
+    .dm-category { margin-bottom: 28px; }
+    .dm-category-title {
+      font-size: 0.9rem; font-weight: 700; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dm-category-title .dm-cat-icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; flex-shrink: 0;
+    }
+    .dm-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .dm-card {
+      background: var(--white); border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius); padding: 16px;
+      box-shadow: var(--shadow-sm); transition: all 0.25s var(--transition-smooth);
+      cursor: default;
+    }
+    .dm-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .dm-card-name { font-size: 0.84rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .dm-card-when { font-size: 0.72rem; color: var(--white); background: var(--orange); padding: 2px 8px; border-radius: 20px; display: inline-block; margin-bottom: 8px; font-weight: 600; }
+    .dm-card-how { font-size: 0.8rem; color: #374151; line-height: 1.5; margin-bottom: 8px; }
+    .dm-card-sets { font-size: 0.75rem; color: var(--text-soft); line-height: 1.4; }
+    .dm-card-sets strong { color: var(--orange); }
+    .dm-card-tip { font-size: 0.75rem; color: var(--green); margin-top: 8px; font-style: italic; }
+    .dm-timer-banner {
+      background: linear-gradient(135deg, var(--orange-light), #fff5ee);
+      border: 1.5px solid var(--orange-mid); border-radius: var(--radius);
+      padding: 16px 20px; margin-bottom: 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .dm-timer-banner .dm-banner-icon { font-size: 1.5rem; }
+    .dm-timer-banner .dm-banner-text { font-size: 0.84rem; line-height: 1.5; }
+    .dm-timer-banner .dm-banner-text strong { color: var(--orange); }
+
     /* ── TIPS CARD ── */
     .tips-section {
       background: var(--white); border: 1px solid rgba(0,0,0,0.06);
@@ -1200,6 +1238,9 @@
     <a class="nav-item" onclick="showPage('calendar')" href="#">
       <span class="nav-icon">📅</span> Weight Log
     </a>
+    <a class="nav-item" onclick="showPage('deskmob')" href="#">
+      <span class="nav-icon">🖐️</span> Desk Mobility
+    </a>
     <a class="nav-item" href="print.html" style="margin-top:auto;">
       <span class="nav-icon">🖨️</span> Printable
     </a>
@@ -1287,6 +1328,15 @@
       <button class="reset-btn" onclick="resetAll()">Reset Month</button>
     </div>
 
+    <!-- DESK MOBILITY PAGE -->
+    <div class="page" id="page-deskmob">
+      <div class="page-header">
+        <h2>Desk Mobility</h2>
+        <p>Quick exercises for laptop workers — do these between meetings, no equipment needed</p>
+      </div>
+      <div id="deskmobContent"></div>
+    </div>
+
     <!-- WEIGHT CALENDAR PAGE -->
     <div class="page" id="page-calendar">
       <div class="page-header">
@@ -1313,6 +1363,7 @@
     <div class="bn-item" onclick="showPage('puppy',this)"><span class="bn-icon">🐶</span>Puppy</div>
     <div class="bn-item" onclick="showPage('progress',this)"><span class="bn-icon">📊</span>Progress</div>
     <div class="bn-item" onclick="showPage('calendar',this)"><span class="bn-icon">📅</span>Weight</div>
+    <div class="bn-item" onclick="showPage('deskmob',this)"><span class="bn-icon">🖐️</span>Desk</div>
     <a class="bn-item" href="print.html" style="text-decoration:none;color:inherit;"><span class="bn-icon">🖨️</span>Print</a>
   </nav>
 
@@ -2110,6 +2161,7 @@ function showPage(name, mobileEl) {
   if (name === 'recipes') buildRecipes();
   if (name === 'puppy') buildPuppy();
   if (name === 'calendar') buildCalendar();
+  if (name === 'deskmob') buildDeskMob();
   return false;
 }
 
@@ -2650,6 +2702,107 @@ function buildCalendar() {
   }
 
   document.getElementById('calGrid').innerHTML = html;
+}
+
+// ── DESK MOBILITY ────────────────────────────────────────────────────────────
+
+const DESK_MOB = [
+  {
+    category: 'Hand & Grip Strength',
+    icon: '✊',
+    color: 'var(--orange)',
+    bgColor: 'var(--orange-light)',
+    exercises: [
+      { name: 'Fist Squeeze & Spread', when: 'Every 1-2 hours', how: 'Make a tight fist, hold 5 seconds. Then spread all fingers as wide as possible, hold 5 seconds. Repeat.', sets: '10 reps, 3-4 times/day', tip: 'Keep a stress ball at your desk for added resistance' },
+      { name: 'Finger Taps (Piano Player)', when: 'Every hour', how: 'Place hands flat on desk. Lift each finger one at a time, tap it down firmly. Thumb, index, middle, ring, pinky — then reverse.', sets: '3 rounds per hand', tip: 'Speed up as it gets easy — builds finger independence' },
+      { name: 'Rubber Band Finger Extensions', when: '2-3 times/day', how: 'Loop a rubber band around all 5 fingers (near tips). Spread fingers apart against the band, hold 3 seconds, release.', sets: '15 reps x 3 sets per hand', tip: 'Double up the band when one feels too easy' },
+      { name: 'Towel/Cloth Wring', when: 'Morning & evening', how: 'Wet a hand towel. Wring it out as hard as you can — twist clockwise 10x, then counterclockwise 10x.', sets: '3 rounds each direction', tip: 'Great to pair with dish washing after meals' },
+      { name: 'Book/Plate Pinch Hold', when: '2 times/day', how: 'Grab a thick book between your thumb and fingers (no wrapping around it). Hold it at your side until your grip gives out.', sets: '3 holds per hand, rest 30s between', tip: 'Start with a light book, progress to heavier ones weekly' },
+      { name: 'Newspaper Crumple', when: 'Once daily', how: 'Take a sheet of newspaper or A4 paper. Using only one hand, crumple it into the tightest ball you can, starting from one corner.', sets: '3 sheets per hand', tip: 'Surprisingly exhausting — great forearm burner' },
+    ]
+  },
+  {
+    category: 'Wrist & Forearm Mobility',
+    icon: '🤚',
+    color: 'var(--blue)',
+    bgColor: 'var(--blue-light)',
+    exercises: [
+      { name: 'Wrist Circles', when: 'Every 1-2 hours', how: 'Extend arms in front, make slow fists, circle wrists — 10 clockwise, 10 counterclockwise. Keep forearms still.', sets: '10 each direction, both wrists', tip: 'Do this every time before you start typing after a break' },
+      { name: 'Prayer Stretch + Reverse Prayer', when: '3 times/day', how: 'Palms together at chest (prayer), push hands down keeping palms together until you feel a stretch — hold 20s. Then flip: backs of hands together, push up — hold 20s.', sets: '3 x 20s each position', tip: 'Best wrist stretch for keyboard users — do it religiously' },
+      { name: 'Desk Wrist Flexor Stretch', when: 'Every 2 hours', how: 'Place palm flat on desk, fingers pointing toward you. Gently lean back to stretch the inner forearm. Then flip hand (back of hand on desk) and lean forward.', sets: '20s each position, each hand', tip: 'If it hurts, start with fingers pointing sideways first' },
+      { name: 'Wrist Curls with Water Bottle', when: '2 times/day', how: 'Rest forearm on desk, hand hanging off edge holding a water bottle. Curl wrist up slowly, lower slowly. Then flip palm down and repeat.', sets: '15 reps each direction, each hand', tip: 'Use a full 1L bottle to progress' },
+    ]
+  },
+  {
+    category: 'Neck & Shoulders (Laptop Posture Fix)',
+    icon: '🪑',
+    color: 'var(--purple)',
+    bgColor: 'var(--purple-light)',
+    exercises: [
+      { name: 'Chin Tucks', when: 'Every hour', how: 'Sit tall. Pull your chin straight back (make a double chin). Hold 5 seconds. You should feel the stretch at the base of your skull.', sets: '10 reps, hourly', tip: 'The #1 exercise for forward head posture from laptops' },
+      { name: 'Ear-to-Shoulder Neck Stretch', when: 'Every 2 hours', how: "Drop right ear toward right shoulder (don't lift shoulder). Hold 20s. Gently place right hand on left side of head for a deeper stretch. Switch sides.", sets: '20s each side x 2', tip: 'Add a gentle look-down for upper trap release' },
+      { name: 'Shoulder Blade Squeezes', when: 'Every hour', how: 'Sit or stand tall. Squeeze shoulder blades together as if holding a pencil between them. Hold 5 seconds, release.', sets: '15 reps, hourly', tip: 'Counters the rounded shoulders from typing' },
+      { name: 'Doorway Chest Opener', when: '3 times/day', how: 'Stand in a doorway, arms at 90 degrees on the frame. Step one foot through and lean until you feel a chest stretch. Hold and breathe.', sets: '30s x 3', tip: 'Do it every time you walk through a doorway as a habit trigger' },
+      { name: 'Thread the Needle', when: 'Morning & evening', how: 'On all fours, reach right arm under your body to the left (thread it through). Let your right shoulder and temple rest on the floor. Hold, then reach right arm up to sky.', sets: '30s each side x 3', tip: 'Opens up thoracic spine — the area most locked up from sitting' },
+    ]
+  },
+  {
+    category: 'Hips & Lower Back (Sitting All Day)',
+    icon: '🧘',
+    color: 'var(--green)',
+    bgColor: 'var(--green-light)',
+    exercises: [
+      { name: 'Seated Figure-4 Stretch', when: 'Every 2 hours', how: 'Cross right ankle over left knee. Sit tall and lean forward gently until you feel a deep glute/hip stretch. Switch sides.', sets: '30s each side', tip: 'You can do this during calls without anyone noticing' },
+      { name: 'Standing Hip Flexor Stretch', when: '3 times/day', how: 'Step right foot forward into a lunge, left knee on floor (or use a pillow). Push hips forward gently, squeeze left glute. Arms overhead for more intensity.', sets: '30s each side x 2', tip: 'Tight hip flexors from sitting cause lower back pain — this is the antidote' },
+      { name: 'Cat-Cow (Chair Version)', when: 'Every 1-2 hours', how: 'Sit on edge of chair, hands on knees. Inhale: arch back, chest forward (cow). Exhale: round back, tuck chin (cat). Move slowly with breath.', sets: '10 reps', tip: 'Do this every time you come back from a break' },
+      { name: 'Seated Spinal Twist', when: '3 times/day', how: 'Sit tall, cross right leg over left. Place left hand on right knee, twist right. Look over your right shoulder. Hold and breathe deeply.', sets: '20s each side x 2', tip: 'Twist on the exhale to go deeper' },
+      { name: 'Standing Forward Fold', when: 'Morning & evening', how: 'Stand with feet hip-width, bend forward from hips. Let arms and head hang heavy. Bend knees slightly if needed. Just breathe and let gravity do the work.', sets: '45s x 3', tip: 'Shake your head yes/no while hanging to release neck tension' },
+      { name: '90/90 Hip Stretch', when: 'Once daily', how: 'Sit on floor, front leg bent 90 degrees in front, back leg bent 90 degrees behind. Lean forward over front shin — hold. Switch legs.', sets: '30s each side x 3', tip: 'The single best hip opener — game changer for sitting all day' },
+    ]
+  },
+  {
+    category: 'Full Body Quick Resets',
+    icon: '⚡',
+    color: '#f59e0b',
+    bgColor: '#fef9ee',
+    exercises: [
+      { name: '2-Minute Desk Reset', when: 'Every 2 hours', how: '30s wrist circles → 30s chin tucks + shoulder squeezes → 30s standing hip flexor stretch → 30s forward fold. Non-negotiable — set a timer.', sets: '2 min, every 2 hours', tip: 'Block these as recurring 2-min calendar events' },
+      { name: '5-Minute Morning Flow', when: 'Before starting work', how: 'Cat-cow 10x → Forward fold 30s → Hip flexor lunge 30s/side → Thread the needle 30s/side → Prayer stretch 20s → Fist squeeze 10x → Wrist circles 10x', sets: '5 min, once daily', tip: 'Do this before you even open your laptop' },
+      { name: 'Walk + Squeeze Circuit', when: 'Lunch break', how: 'Walk around your apartment/building. Every 30 steps: 10 fist squeezes, 5 shoulder blade squeezes, 5 chin tucks. Keep walking.', sets: '10 min walk', tip: 'Combines movement with targeted mobility — very efficient' },
+    ]
+  },
+];
+
+function buildDeskMob() {
+  const html = `
+    <div class="dm-timer-banner">
+      <div class="dm-banner-icon">⏰</div>
+      <div class="dm-banner-text">
+        <strong>Set a timer every 2 hours.</strong> Even 2 minutes of movement reverses hours of laptop damage.
+        Your hands and flexibility will improve noticeably within 2 weeks of consistency.
+      </div>
+    </div>
+    ${DESK_MOB.map(cat => `
+      <div class="dm-category">
+        <div class="dm-category-title">
+          <div class="dm-cat-icon" style="background:${cat.bgColor};color:${cat.color}">${cat.icon}</div>
+          <span style="color:${cat.color}">${cat.category}</span>
+        </div>
+        <div class="dm-grid">
+          ${cat.exercises.map(ex => `
+            <div class="dm-card">
+              <div class="dm-card-name">${ex.name}</div>
+              <div class="dm-card-when">${ex.when}</div>
+              <div class="dm-card-how">${ex.how}</div>
+              <div class="dm-card-sets"><strong>Do:</strong> ${ex.sets}</div>
+              ${ex.tip ? `<div class="dm-card-tip">💡 ${ex.tip}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('')}
+  `;
+  document.getElementById('deskmobContent').innerHTML = html;
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
