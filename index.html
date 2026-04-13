@@ -1478,9 +1478,16 @@ let activeMealDay = 0;
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 
+function getISTDate() {
+  // Always use IST (UTC+5:30) regardless of system timezone
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  return new Date(utc + 5.5 * 3600000);
+}
+
 function getTodayDayName() {
-  const start = new Date(2026, 3, 9); // Plan start: April 9, 2026
-  const today = new Date();
+  const start = new Date(2026, 3, 13); // Plan start: April 13, 2026 (Monday)
+  const today = getISTDate();
   const daysSinceStart = Math.floor((today - start) / (1000 * 60 * 60 * 24));
   const idx = ((daysSinceStart % 7) + 7) % 7; // handles before start date
   return WEEK_DAYS[idx]; // maps to Mon, Tue, Wed, ... Sun
@@ -1594,9 +1601,10 @@ function buildToday() {
   const todayName = getTodayDayName();
   const meal = MEALS.find(m => m.day === todayName) || MEALS[0];
   const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const dateStr = new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long' });
+  const istNow = getISTDate();
+  const dateStr = istNow.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long' });
 
-  document.getElementById('today-heading').textContent = `Good ${new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening'} 👋`;
+  document.getElementById('today-heading').textContent = `Good ${istNow.getHours() < 12 ? 'Morning' : istNow.getHours() < 17 ? 'Afternoon' : 'Evening'} 👋`;
   document.getElementById('today-date').textContent = dateStr;
 
   const allDone = isDayDone(activeWeek, sched.day);
@@ -1651,7 +1659,7 @@ function buildToday() {
 // ── WATER TRACKER ────────────────────────────────────────────────────────────
 
 function getWaterKey() {
-  const d = new Date();
+  const d = getISTDate();
   return `water_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
@@ -1701,7 +1709,7 @@ const WELLNESS_ITEMS = [
 ];
 
 function getWellnessKey(id) {
-  const d = new Date();
+  const d = getISTDate();
   return `well_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_${id}`;
 }
 
@@ -2564,7 +2572,7 @@ function clearDailyLog(y, m, d) {
 function buildCalendar() {
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const DAY_HEADERS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const today = new Date();
+  const today = getISTDate();
   const todayY = today.getFullYear(), todayM = today.getMonth(), todayD = today.getDate();
 
   document.getElementById('calMonthLabel').textContent = `${MONTHS[calMonth]} ${calYear}`;
@@ -2646,9 +2654,9 @@ function buildCalendar() {
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 
-// Auto-set week based on plan start date (April 9, 2026)
-const PLAN_START = new Date(2026, 3, 9); // months are 0-indexed
-const daysSinceStart = Math.floor((new Date() - PLAN_START) / (1000 * 60 * 60 * 24));
+// Auto-set week based on plan start date (April 13, 2026)
+const PLAN_START = new Date(2026, 3, 13); // months are 0-indexed
+const daysSinceStart = Math.floor((getISTDate() - PLAN_START) / (1000 * 60 * 60 * 24));
 activeWeek = Math.max(1, Math.min(4, Math.floor(daysSinceStart / 7) + 1));
 
 // Set today's meal day
